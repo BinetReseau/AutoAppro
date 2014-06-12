@@ -6,6 +6,10 @@ import java.awt.*;
  * <p>
  * Only one single instance of this class may be created,
  * as there is also only one splash-screen.
+ * <p>
+ * Do not forget to add the "-splash:<filename>" argument to the Java application launcher
+ * for the splash screen not to be null. If in a .jar file, you can also add a line
+ * "SplashScreen-Image: <image name>" in the manifest file.
  *
  * @author Remi Bazin, X2012
  */
@@ -47,7 +51,6 @@ public class MySplash {
 		graphics = splash.createGraphics();
 		graphics.setColor(progressColor);
 		graphics.drawRect(progressArea.x, progressArea.y, progressArea.width, progressArea.height);
-		--progressArea.width;
 		splash.update();
 		statusLastWidth = 0;
 	}

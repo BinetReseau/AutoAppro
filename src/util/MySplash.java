@@ -74,7 +74,7 @@ public class MySplash {
 	 * @param progress The value of the new progress, between 0 and 1.
 	 * @throws IllegalArgumentException If <code>progress</code> is not between 0 and 1.
 	 */
-	public synchronized void setStatus(String status, float progress)
+	public synchronized void setStatus(String status, double progress)
 	{
 		if (splash == null) return;
 		if ((progress < 0) || (progress > 1))

@@ -64,7 +64,7 @@ public class MySplash {
 			throw new IllegalArgumentException("Invalid progress " + progress);
 		graphics.setColor(progressColor);
 		int width = (int) (progress * progressArea.width);
-		graphics.drawLine(progressArea.x, progressArea.y, width, progressArea.height);
+		graphics.fillRect(progressArea.x, progressArea.y, width, progressArea.height);
 		splash.update();
 	}
 
@@ -81,7 +81,7 @@ public class MySplash {
 			throw new IllegalArgumentException("Invalid progress " + progress);
 		graphics.setColor(progressColor);
 		int width = (int) (progress * progressArea.width);
-		graphics.drawLine(progressArea.x, progressArea.y, width, progressArea.height);
+		graphics.fillRect(progressArea.x, progressArea.y, width, progressArea.height);
 		graphics.setComposite(AlphaComposite.Clear);
 		graphics.fillRect(statusPosition.x, statusPosition.y, statusLastWidth, graphics.getFontMetrics().getHeight());
 		graphics.setPaintMode();

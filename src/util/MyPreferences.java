@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** An easy way to handle preferences. */
-public class MyPreferences {
+public class MyPreferences
+{
 	private static final String PREF_FILENAME = "prefs.dat";
 
 	private static final HashMap<String, Serializable> data = new HashMap<String, Serializable>();

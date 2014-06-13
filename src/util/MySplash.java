@@ -11,7 +11,8 @@ import java.awt.*;
  * for the splash screen not to be null. If in a .jar file, you can also add a line
  * "SplashScreen-Image: <image name>" in the manifest file.
  */
-public class MySplash {
+public class MySplash
+{
 	private static volatile boolean instanceCreated = false;
 	private static final SplashScreen splash = SplashScreen.getSplashScreen();
 	

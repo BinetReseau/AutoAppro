@@ -1,7 +1,8 @@
 import java.io.Serializable;
 
 /** The possible product types. */
-enum ProductType {
+enum ProductType
+{
 	/** Free product. */ OPEN,
 	/** Normal product. */ NORMAL,
 	/** Constant quantity product (e.g. paid by weight, logged with number). */ CONSTANT_QTT,

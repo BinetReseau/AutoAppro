@@ -3,7 +3,8 @@ import java.awt.*;
 import util.*;
 
 /** The main class for the program. */
-public class AutoAppro {
+public class AutoAppro
+{
 	/* Example values for the splash screen */
 	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);
 	private static final Color SPLASH_PRGSS_COLOR = Color.WHITE;

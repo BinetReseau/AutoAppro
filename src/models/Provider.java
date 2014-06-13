@@ -1,6 +1,6 @@
 package models;
 
-/** The interface every provider must implement.
+/** The abstract class every provider must implement.
  * <p>
  * The main principle is the following :
  * <ol>
@@ -14,7 +14,7 @@ package models;
  * the application might get, one by one, all the items (missing list taken into account).
  * {@link #getItems(Retriever)} also clears the list of items so that a new cycle may begin again.
  */
-public interface Provider
+public abstract class Provider
 {
 	/** Try to automatically retrieve the information related to the last delivery.
 	 * <p>
@@ -27,7 +27,7 @@ public interface Provider
 	 *   automatically retrieved, <code>false</code> if a call to
 	 *   {@link #retrieveFromString(String)} is required.
 	 */
-	public boolean tryAutomaticRetrieve();
+	public abstract boolean tryAutomaticRetrieve();
 
 	/** Retrieve the main information related to the delivery from a string parameter.
 	 * <p>
@@ -38,14 +38,14 @@ public interface Provider
 	 * @param data The data containing the information.
 	 * @throws IllegalArgumentException If <code>data</code> is malformed.
 	 */
-	public void retrieveFromString(String data);
+	public abstract void retrieveFromString(String data);
 
 	/** Should we ask the used for any missing list content.
 	 *
 	 * @return <code>true</code> if the program is to ask the user for a
 	 *   missing list and give the content with {@link #retrieveMissing(String)}.
 	 */
-	public boolean useMissingList();
+	public abstract boolean useMissingList();
 
 	/** Retrieve the missing information related to the delivery from a string parameter.
 	 * <p>
@@ -55,7 +55,7 @@ public interface Provider
 	 * @param data The missing information in a string.
 	 * @throws IllegalArgumentException If <code>data</code> is malformed.
 	 */
-	public void retrieveMissing(String data);
+	public abstract void retrieveMissing(String data);
 
 	/** Inform the <code>retriever</code> of all the final products and prices of the delivery.
 	 * <p>
@@ -64,5 +64,11 @@ public interface Provider
 	 *
 	 * @param retriever The {@link Retriever} to use to tell the results.
 	 */
-	public void getItems(Retriever retriever);
+	public abstract void getItems(Retriever retriever);
+
+	@Override
+	public String toString()
+	{
+		return this.getClass().getSimpleName();
+	}
 }

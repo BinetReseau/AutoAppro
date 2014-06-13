@@ -3,6 +3,10 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
+import providers.*;
+import models.*;
 import util.*;
 
 /** The main class for the program. */
@@ -14,10 +18,13 @@ public class AutoAppro
 	private static final Color SPLASH_PRGSS_COLOR = Color.WHITE;
 	private static final Point SPLASH_STATUS_POS = new Point(25, 360);
 	private static final Color SPLASH_STATUS_COLOR = Color.WHITE;
+	/* List of all the available providers */
+	private static final Provider[] providers = {new Intermarche()};
 
 	private static MySplash splash;
 
 	public static ResourceBundle messages;
+	public static Provider provider;
 
 	/** The starting point of
 	 *
@@ -43,6 +50,7 @@ public class AutoAppro
 					break;
 				case "-help":
 					System.out.println(USAGE);
+					splash.dispose();
 					return;
 				default:
 					throw new IllegalArgumentException("Unknown option " + args[i]);
@@ -51,6 +59,8 @@ public class AutoAppro
 		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 			System.err.println(USAGE);
+			splash.dispose();
+			return;
 		}
 		/* Loading the language bundle */
 		{
@@ -64,10 +74,44 @@ public class AutoAppro
 			messages = ResourceBundle.getBundle("MessagesBundle", locale);
 		}
 		/* Getting the provider */
-		splash.setStatus(messages.getString("loadprovider"), 0.2);
-		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
+		splash.setStatus(messages.getString("load_provider"), 0.05);
+		provider = null;
+		{
+			Serializable record = MyPreferences.get("provider");
+			if (record != null)
+			{
+				String savedName = (String) record;
+				for (Provider p : providers)
+				{
+					if (p.getClass().getSimpleName().equals(savedName))
+					{
+						provider = p;
+						break;
+					}
+				}
+			}
+		}
+		if (provider == null)
+		{
+			if (providers.length < 2)
+			{
+				provider = providers[0];
+			} else {
+				Object chosen = JOptionPane.showInputDialog(null, messages.getString("provider_msg"),
+						messages.getString("provider_title"), JOptionPane.QUESTION_MESSAGE, null,
+						providers, providers[0]);
+				if (chosen == null)
+				{
+					splash.dispose();
+					return;
+				}
+				provider = (Provider) chosen;
+			}
+			MyPreferences.set("provider", provider.getClass().getSimpleName());
+			MyPreferences.save();
+		}
 		/* Checking for updates */
-		splash.setStatus(messages.getString("loadupdates"), 0.4);
+		splash.setStatus(messages.getString("load_updates"), 0.1);
 		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
 		/* Creating the main window */
 		splash.setStatus("", 1);

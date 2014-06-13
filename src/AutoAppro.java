@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import providers.*;
@@ -25,6 +27,7 @@ public class AutoAppro
 
 	public static ResourceBundle messages;
 	public static Provider provider;
+	public static Icon icon;
 
 	/** The starting point of
 	 *
@@ -73,6 +76,9 @@ public class AutoAppro
 			locale = new Locale("en", "US");
 			messages = ResourceBundle.getBundle("MessagesBundle", locale);
 		}
+		/* Loading the icon for the application */
+		java.net.URL imgURL = AutoAppro.class.getResource("icon.png");
+		icon = new ImageIcon(imgURL);
 		/* Getting the provider */
 		splash.setStatus(messages.getString("load_provider"), 0.05);
 		provider = null;
@@ -98,7 +104,7 @@ public class AutoAppro
 				provider = providers[0];
 			} else {
 				Object chosen = JOptionPane.showInputDialog(null, messages.getString("provider_msg"),
-						messages.getString("provider_title"), JOptionPane.QUESTION_MESSAGE, null,
+						messages.getString("provider_title"), JOptionPane.QUESTION_MESSAGE, icon,
 						providers, providers[0]);
 				if (chosen == null)
 				{

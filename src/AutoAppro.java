@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import util.*;
 
@@ -13,6 +16,8 @@ public class AutoAppro
 
 	private static MySplash splash;
 
+	public static ResourceBundle messages;
+
 	/** The starting point of
 	 *
 	 * @param args The command-line arguments.
@@ -25,12 +30,21 @@ public class AutoAppro
 		/* Parsing the command-line arguments */
 		// TODO
 		/* Loading the language bundle */
-		// TODO
+		{
+			Locale locale;
+			Serializable record = MyPreferences.get("locale");
+			if (record != null)
+				locale = (Locale) record;
+			else
+				locale = Locale.getDefault();
+			locale = new Locale("en", "US");
+			messages = ResourceBundle.getBundle("MessagesBundle", locale);
+		}
 		/* Getting the provider */
-		splash.setStatus("Retrieving the provider ...", 0.2);
+		splash.setStatus(messages.getString("loadprovider"), 0.2);
 		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
 		/* Checking for updates */
-		splash.setStatus("Checking for updates ...", 0.4);
+		splash.setStatus(messages.getString("loadupdates"), 0.4);
 		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
 		/* Creating the main window */
 		splash.setStatus("", 1);

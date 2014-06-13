@@ -36,7 +36,7 @@ public class MySplash
 		this.statusPosition = statusPosition;
 		this.statusColor = statusColor;
 		this.progressArea = progressArea;
-		if (splash == null)
+		if ((splash == null) || (!splash.isVisible()))
 		{
 			graphics = null;
 			return;
@@ -61,7 +61,7 @@ public class MySplash
 	 */
 	public synchronized void setProgress(double progress)
 	{
-		if (splash == null) return;
+		if ((splash == null) || (!splash.isVisible())) return;
 		if ((progress < 0) || (progress > 1))
 			throw new IllegalArgumentException("Invalid progress " + progress);
 		graphics.setColor(progressColor);
@@ -78,7 +78,7 @@ public class MySplash
 	 */
 	public synchronized void setStatus(String status, double progress)
 	{
-		if (splash == null) return;
+		if ((splash == null) || (!splash.isVisible())) return;
 		if ((progress < 0) || (progress > 1))
 			throw new IllegalArgumentException("Invalid progress " + progress);
 		graphics.setColor(progressColor);

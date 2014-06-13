@@ -10,8 +10,6 @@ import java.awt.*;
  * Do not forget to add the "-splash:<filename>" argument to the Java application launcher
  * for the splash screen not to be null. If in a .jar file, you can also add a line
  * "SplashScreen-Image: <image name>" in the manifest file.
- *
- * @author Remi Bazin, X2012
  */
 public class MySplash {
 	private static volatile boolean instanceCreated = false;

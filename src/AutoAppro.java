@@ -2,10 +2,7 @@ import java.awt.*;
 
 import util.*;
 
-/** The main class for the program.
- *
- * @author Remi Bazin, X2012
- */
+/** The main class for the program. */
 public class AutoAppro {
 	/* Example values for the splash screen */
 	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);

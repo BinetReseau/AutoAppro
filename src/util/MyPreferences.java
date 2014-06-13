@@ -4,10 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An easy way to handle preferences.
- *
- * @author Remi Bazin, X2012
- */
+/** An easy way to handle preferences. */
 public class MyPreferences {
 	private static final String PREF_FILENAME = "prefs.dat";
 

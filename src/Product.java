@@ -11,10 +11,7 @@ enum ProductType {
 	 * You will also have to indicate the average number of weight by fruit. */ ROUND_QTT
 }
 
-/** The product class which holds the informations of a single product type.
- *
- * @author Remi Bazin, X2012
- */
+/** The product class which holds the informations of a single product type. */
 public class Product {
 	/** The quantity type for this product. */
 	public ProductType type;

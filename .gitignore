@@ -15,6 +15,8 @@ hs_err_pid*
 # Preference file
 prefs.dat
 
-# Language and picture files that ought to be in the future JAR package
+# Files that ought to be in the future JAR package
 !/bin/MessagesBundle*
 !/bin/*.png
+!/bin/loggers
+!/bin/loggers/bar1_preambule.js

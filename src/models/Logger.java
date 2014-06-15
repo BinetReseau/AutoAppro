@@ -1,9 +1,8 @@
 package models;
 
-import java.util.List;
-
 /** The interface every logger must implement. */
-public interface Logger {
+public interface Logger
+{
 	/** Log all the given items.
 	 *
 	 * @param items The list of items to log.
@@ -11,5 +10,5 @@ public interface Logger {
 	 *   or the result string to put in the clip-board.
 	 * @throws Exception If an error occurs.
 	 */
-	public String log(List<LogItem> items) throws Exception;
+	public String log(Iterable<LogItem> items) throws Exception;
 }

@@ -10,16 +10,20 @@ public class HTTPDownload {
 	/** Read the first line of a file through HTTP.
 	 *
 	 * @param urlString The URL of the file to read.
-	 * @return The content of the first line of the file.
-	 * @throws Exception If an error occurs.
+	 * @return The content of the first line of the file,
+	 *   or <code>null</code> if an error happens.
 	 */
-	public static String readFirstLine(String urlString) throws Exception
+	public static String readFirstLine(String urlString)
 	{
-		URL url = new URL(urlString);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-		String result = reader.readLine();
-		reader.close();
-		return result;
+		try {
+			URL url = new URL(urlString);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			String result = reader.readLine();
+			reader.close();
+			return result;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/** Download a file through HTTP.

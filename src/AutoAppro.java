@@ -14,6 +14,8 @@ import util.*;
 /** The main class for the program. */
 public class AutoAppro
 {
+	private static final String VERSION = "1.0.0";
+	private static final String UPDATE_URL = "http://rosetta.hd.free.fr/";
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
 	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);
@@ -118,7 +120,17 @@ public class AutoAppro
 		}
 		/* Checking for updates */
 		splash.setStatus(messages.getString("load_updates"), 0.1);
-		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
+		String lastVersion = HTTPDownload.readFirstLine(UPDATE_URL + "last.txt");
+		if (lastVersion != null)
+		{
+			if (!lastVersion.equals(VERSION))
+			{
+				// TODO update the software
+			}
+		} else {
+			splash.setStatus(messages.getString("err_updates"), 0.1);
+			try { Thread.sleep(2000); } catch (InterruptedException e) { }
+		}
 		/* Creating the main window */
 		splash.setStatus("", 1);
 		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO

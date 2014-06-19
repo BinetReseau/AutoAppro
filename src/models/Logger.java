@@ -1,7 +1,7 @@
 package models;
 
-/** The interface every logger must implement. */
-public interface Logger
+/** The abstract class every logger must implement. */
+public abstract class Logger
 {
 	/** Log all the given items.
 	 *
@@ -10,11 +10,17 @@ public interface Logger
 	 *   or the result string to put in the clip-board.
 	 * @throws Exception If an error occurs.
 	 */
-	public String log(Iterable<LogItem> items) throws Exception;
+	public abstract String log(Iterable<LogItem> items) throws Exception;
 
 	/** Get the logger name.
 	 *
 	 * @return The logger name.
 	 */
-	public String getName();
+	public abstract String getName();
+
+	@Override
+	public String toString()
+	{
+		return this.getName();
+	}
 }

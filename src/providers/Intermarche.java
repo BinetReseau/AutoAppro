@@ -8,7 +8,7 @@ import java.util.regex.*;
 
 import models.*;
 
-public class Intermarche implements Provider
+public class Intermarche extends Provider
 {
 	private static final int INITIAL_HASHMAP_SIZE = 4096;
 	private static final int SIMILARITY_ERR_ACCEPT = 3;

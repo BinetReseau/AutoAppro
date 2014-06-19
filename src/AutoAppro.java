@@ -93,7 +93,7 @@ public class AutoAppro
 				String savedName = (String) record;
 				for (Provider p : providers)
 				{
-					if (p.getClass().getSimpleName().equals(savedName))
+					if (p.getName().equals(savedName))
 					{
 						provider = p;
 						break;

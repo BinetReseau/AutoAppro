@@ -8,7 +8,7 @@ import java.util.regex.*;
 
 import models.*;
 
-public class Intermarche extends Provider
+public class Intermarche implements Provider
 {
 	private static final int INITIAL_HASHMAP_SIZE = 4096;
 	private static final int SIMILARITY_ERR_ACCEPT = 3;
@@ -190,5 +190,10 @@ public class Intermarche extends Provider
 			for (ProviderProduct p : list)
 				retriever.addProduct(p);
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "Intermarché";
 	}
 }

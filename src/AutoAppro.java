@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import providers.*;
+import loggers.*;
 import models.*;
 import util.*;
 
@@ -24,13 +25,15 @@ public class AutoAppro
 	private static final Color SPLASH_PRGSS_COLOR = Color.WHITE;
 	private static final Point SPLASH_STATUS_POS = new Point(25, 360);
 	private static final Color SPLASH_STATUS_COLOR = Color.WHITE;
-	/* List of all the available providers */
+	/* List of all the available providers and loggers */
 	private static final Provider[] providers = {new Intermarche()};
+	private static final Logger[] loggers = {new Bar2()};
 
 	private static MySplash splash;
 
 	public static ResourceBundle messages;
 	public static Provider provider;
+	public static Logger logger;
 	public static Icon icon;
 
 	/** The starting point of
@@ -117,11 +120,49 @@ public class AutoAppro
 				}
 				provider = (Provider) chosen;
 			}
-			MyPreferences.set("provider", provider.getClass().getSimpleName());
+			MyPreferences.set("provider", provider.getName());
 			MyPreferences.save();
 		}
+		/* Getting the logger */
+		splash.setStatus(messages.getString("load_logger"), 0.1);
+		logger = null;
+		{
+			Serializable record = MyPreferences.get("logger");
+			if (record != null)
+			{
+				String savedName = (String) record;
+				for (Logger l : loggers)
+				{
+					if (l.getName().equals(savedName))
+					{
+						logger = l;
+						break;
+					}
+				}
+			}
+		}
+		if (logger == null)
+		{
+			if (loggers.length < 2)
+			{
+				logger = loggers[0];
+			} else {
+				Object chosen = JOptionPane.showInputDialog(null, messages.getString("logger_msg"),
+						messages.getString("logger_title"), JOptionPane.QUESTION_MESSAGE, icon,
+						loggers, loggers[0]);
+				if (chosen == null)
+				{
+					splash.dispose();
+					return;
+				}
+				logger = (Logger) chosen;
+			}
+			MyPreferences.set("logger", logger.getName());
+			MyPreferences.save();
+		}
+		
 		/* Checking for updates */
-		splash.setStatus(messages.getString("load_updates"), 0.1);
+		splash.setStatus(messages.getString("load_updates"), 0.15);
 		String lastVersion = HTTPDownload.readFirstLine(UPDATE_URL + "last.txt");
 		if (lastVersion != null)
 		{

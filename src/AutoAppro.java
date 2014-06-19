@@ -1,11 +1,13 @@
 import java.awt.*;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import providers.*;
 import models.*;
@@ -133,8 +135,14 @@ public class AutoAppro
 		}
 		/* Creating the main window */
 		splash.setStatus("", 1);
-		try { Thread.sleep(2000); } catch (InterruptedException e) { } // TODO
-		splash.dispose();
-		// TODO display the main window
+		try {
+			SwingUtilities.invokeAndWait(MainWindow.setupGUI);
+			splash.dispose();
+			SwingUtilities.invokeLater(MainWindow.displayGUI);
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+			splash.dispose();
+			return;
+		}
 	}
 }

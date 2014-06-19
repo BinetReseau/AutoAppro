@@ -12,7 +12,7 @@ import models.*;
  * fills the corresponding fields so that the user only needs to valid
  * the delivery.
  */
-public class Bar1 implements Logger
+public class Bar2 implements Logger
 {
 	private static final String PREAMBULE_FILENAME = "bar1_preambule.js";
 

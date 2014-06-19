@@ -11,4 +11,10 @@ public interface Logger
 	 * @throws Exception If an error occurs.
 	 */
 	public String log(Iterable<LogItem> items) throws Exception;
+
+	/** Get the logger name.
+	 *
+	 * @return The logger name.
+	 */
+	public String getName();
 }

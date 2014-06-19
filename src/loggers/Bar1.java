@@ -51,4 +51,10 @@ public class Bar1 implements Logger
 		if (remaining > 0.9999) return Integer.toString(approx + 1);
 		return Double.toString(value);
 	}
+
+	@Override
+	public String getName()
+	{
+		return "Site bars 2.0 beta";
+	}
 }

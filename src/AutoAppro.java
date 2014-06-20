@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -17,7 +16,7 @@ import util.*;
 /** The main class for the program. */
 public class AutoAppro
 {
-	private static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.0.0";
 	private static final String UPDATE_URL = "http://rosetta.hd.free.fr/";
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
@@ -34,7 +33,7 @@ public class AutoAppro
 	public static ResourceBundle messages;
 	public static Provider provider;
 	public static Logger logger;
-	public static Icon icon;
+	public static ImageIcon icon;
 
 	/** The starting point of
 	 *

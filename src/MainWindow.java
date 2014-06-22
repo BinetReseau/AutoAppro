@@ -111,8 +111,20 @@ public class MainWindow {
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			panel_3.add(productList, BorderLayout.CENTER);
+			setButtonsEnabled(false);
 		}
 	};
+
+	/* Disable or enable all buttons of the GUI */
+	private static void setButtonsEnabled(boolean value)
+	{
+		retrieveContent.setEnabled(value);
+		retrieveMissing.setEnabled(value);
+		btnDismiss.setEnabled(value);
+		btnValidate.setEnabled(value);
+		btnEdit.setEnabled(value);
+		btnDelete.setEnabled(value);
+	}
 
 	/** The displaying function for the main window. */
 	public static Runnable displayGUI = new Runnable() {

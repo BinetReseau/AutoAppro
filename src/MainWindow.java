@@ -5,6 +5,12 @@ import javax.swing.border.*;
 /** The main window handler. */
 public class MainWindow {
 	private static JFrame mainWindow;
+	private static JButton retrieveContent, retrieveMissing;
+	private static JButton btnDismiss, btnValidate;
+	private static JButton btnEdit, btnDelete;
+	private static JLabel retrieveStatus;
+	private static JTable table;
+	private static JList<Product> productList;
 
 	/** The initializing function for the main window. */
 	public static Runnable setupGUI = new Runnable() {
@@ -52,24 +58,24 @@ public class MainWindow {
 			panel_1.setBorder(new TitledBorder(null, lang("window_retriever_title"),
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_1, BorderLayout.NORTH);
-			JButton retrieveContent = new JButton(lang("window_retriever_content"));
+			retrieveContent = new JButton(lang("window_retriever_content"));
 			panel_1.add(retrieveContent);
-			JButton retrieveMissing = new JButton(lang("window_retriever_missing"));
+			retrieveMissing = new JButton(lang("window_retriever_missing"));
 			panel_1.add(retrieveMissing);
-			JLabel retrieveStatus = new JLabel(lang("common_loading"));
+			retrieveStatus = new JLabel(lang("common_loading"));
 			panel_1.add(retrieveStatus);
 			JPanel panel_2 = new JPanel();
 			panel_2.setBorder(new TitledBorder(null, lang("window_list_title"),
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_2);
 			panel_2.setLayout(new BorderLayout(0, 0));
-			JTable table = new JTable();
+			table = new JTable();
 			panel_2.add(table, BorderLayout.CENTER);
 			JPanel panel_5 = new JPanel();
 			panel_2.add(panel_5, BorderLayout.SOUTH);
-			JButton btnDismiss = new JButton(lang("window_list_dismiss"));
+			btnDismiss = new JButton(lang("window_list_dismiss"));
 			panel_5.add(btnDismiss);
-			JButton btnValidate = new JButton(lang("window_list_validate"));
+			btnValidate = new JButton(lang("window_list_validate"));
 			panel_5.add(btnValidate);
 			JPanel panel_3 = new JPanel();
 			panel_3.setBorder(new TitledBorder(null, lang("window_products_title"),
@@ -80,13 +86,13 @@ public class MainWindow {
 			panel_3.add(panel_4, BorderLayout.NORTH);
 			JLabel lblProducts = new JLabel(lang("common_loading"));
 			panel_4.add(lblProducts);
-			JButton btnEdit = new JButton("Edit"); // TODO find icon
+			btnEdit = new JButton("Edit"); // TODO find icon
 			panel_4.add(btnEdit);
-			JButton btnDelete = new JButton("Delete"); // TODO find icon
+			btnDelete = new JButton("Delete"); // TODO find icon
 			panel_4.add(btnDelete);
-			JList list = new JList();
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			panel_3.add(list, BorderLayout.CENTER);
+			productList = new JList<Product>();
+			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			panel_3.add(productList, BorderLayout.CENTER);
 		}
 	};
 

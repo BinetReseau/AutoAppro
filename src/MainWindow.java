@@ -1,4 +1,5 @@
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -86,9 +87,9 @@ public class MainWindow {
 			panel_3.add(panel_4, BorderLayout.NORTH);
 			JLabel lblProducts = new JLabel(lang("common_loading"));
 			panel_4.add(lblProducts);
-			btnEdit = new JButton("Edit"); // TODO find icon
+			btnEdit = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_info.png")));
 			panel_4.add(btnEdit);
-			btnDelete = new JButton("Delete"); // TODO find icon
+			btnDelete = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_delete.png")));
 			panel_4.add(btnDelete);
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

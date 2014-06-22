@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -34,6 +36,13 @@ public class MainWindow {
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
 			JMenuItem mntmExit = new JMenuItem(lang("window_menu_exit"));
+			mntmExit.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					System.exit(0);
+				}
+			});
 			mnFile.add(mntmExit);
 			JMenu mnHelp = new JMenu(lang("window_menu_hm"));
 			menuBar.add(mnHelp);
@@ -42,6 +51,14 @@ public class MainWindow {
 			JSeparator separator_1 = new JSeparator();
 			mnHelp.add(separator_1);
 			JMenuItem mntmAbout = new JMenuItem(lang("window_menu_about"));
+			mntmAbout.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					JOptionPane.showMessageDialog(mainWindow, lang("about_c1") + AutoAppro.VERSION +
+							"\n" + lang("about_c2"), lang("about_title"), JOptionPane.INFORMATION_MESSAGE);
+				}
+			});
 			mnHelp.add(mntmAbout);
 			JPanel contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

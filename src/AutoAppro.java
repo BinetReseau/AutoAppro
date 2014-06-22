@@ -79,7 +79,6 @@ public class AutoAppro
 				locale = (Locale) record;
 			else
 				locale = Locale.getDefault();
-			locale = new Locale("en", "US");
 			messages = ResourceBundle.getBundle("MessagesBundle", locale);
 		}
 		/* Loading the icon for the application */

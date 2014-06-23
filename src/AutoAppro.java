@@ -17,8 +17,8 @@ import util.*;
 /** The main class for the program. */
 public class AutoAppro
 {
-	public static final String VERSION = "1.0.0";
-	private static final String UPDATE_URL = "http://rosetta.hd.free.fr/";
+	public static final String VERSION = "test";
+	private static final String UPDATE_URL = "http://129.104.234.60/AutoAppro/";
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
 	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);

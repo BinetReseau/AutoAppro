@@ -36,6 +36,7 @@ public class AutoAppro
 	public static Logger logger;
 	public static ImageIcon icon;
 	public static HashMap<Serializable, Product> products;
+	public static boolean productsModified;
 
 	/** The starting point of
 	 *
@@ -199,5 +200,14 @@ public class AutoAppro
 			products = (HashMap<Serializable, Product>) productsRecord;
 		else
 			products = new HashMap<Serializable, Product>();
+		productsModified = false;
+	}
+
+	/** Try to save the list of products if necessary. */
+	public static void saveProducts()
+	{
+		if (!productsModified) return;
+		SerialFileHandler.writeObject(products, provider.getName() + ".dat");
+		productsModified = false;
 	}
 }

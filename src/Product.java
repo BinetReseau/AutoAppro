@@ -13,7 +13,9 @@ enum ProductType
 }
 
 /** The product class which holds the informations of a single product type. */
-public class Product {
+public class Product implements Serializable {
+	private static final long serialVersionUID = 4291170913868609146L;
+
 	/** The quantity type for this product. */
 	public ProductType type;
 	/** The quantity multiplier (if any). */
@@ -22,4 +24,10 @@ public class Product {
 	public int barID;
 	/** The necessary information for the provider to identify this product. */
 	public Serializable providerID;
+
+	@Override
+	public String toString()
+	{
+		return providerID.toString();
+	}
 }

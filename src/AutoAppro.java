@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -34,6 +35,7 @@ public class AutoAppro
 	public static Provider provider;
 	public static Logger logger;
 	public static ImageIcon icon;
+	public static HashMap<Serializable, Product> products;
 
 	/** The starting point of
 	 *
@@ -158,7 +160,6 @@ public class AutoAppro
 			MyPreferences.set("logger", logger.getName());
 			MyPreferences.save();
 		}
-		
 		/* Checking for updates */
 		splash.setStatus(messages.getString("load_updates"), 0.15);
 		String lastVersion = HTTPDownload.readFirstLine(UPDATE_URL + "last.txt");
@@ -172,6 +173,9 @@ public class AutoAppro
 			splash.setStatus(messages.getString("err_updates"), 0.1);
 			try { Thread.sleep(2000); } catch (InterruptedException e) { }
 		}
+		/* Getting the products associated with the current provider */
+		splash.setStatus(messages.getString("load_products"), 0.95);
+		getProducts();
 		/* Creating the main window */
 		splash.setStatus("", 1);
 		try {
@@ -183,5 +187,17 @@ public class AutoAppro
 			splash.dispose();
 			return;
 		}
+	}
+
+	/* A little external function to get the products to avoid a SuppressWarnings
+	 * over the whole main function. */
+	@SuppressWarnings("unchecked")
+	private static void getProducts()
+	{
+		Object productsRecord = SerialFileHandler.readObject(provider.getName() + ".dat");
+		if ((productsRecord != null) && (productsRecord.getClass() == HashMap.class))
+			products = (HashMap<Serializable, Product>) productsRecord;
+		else
+			products = new HashMap<Serializable, Product>();
 	}
 }

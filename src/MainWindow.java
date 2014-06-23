@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -13,7 +15,7 @@ public class MainWindow {
 	private static JButton retrieveContent, retrieveMissing;
 	private static JButton btnDismiss, btnValidate;
 	private static JButton btnEdit, btnDelete;
-	private static JLabel retrieveStatus;
+	private static JLabel retrieveStatus, lblProducts;
 	private static JTable table;
 	private static JList<Product> productList;
 
@@ -111,7 +113,7 @@ public class MainWindow {
 			panel_3.setLayout(new BorderLayout(0, 0));
 			JPanel panel_4 = new JPanel();
 			panel_3.add(panel_4, BorderLayout.NORTH);
-			JLabel lblProducts = new JLabel(lang("common_loading"));
+			lblProducts = new JLabel();
 			panel_4.add(lblProducts);
 			btnEdit = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_info.png")));
 			panel_4.add(btnEdit);
@@ -120,6 +122,7 @@ public class MainWindow {
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			panel_3.add(productList, BorderLayout.CENTER);
+			updateProducts();
 			setButtonsEnabled(false);
 		}
 	};
@@ -147,5 +150,13 @@ public class MainWindow {
 	private static String lang(String keyword)
 	{
 		return AutoAppro.messages.getString(keyword);
+	}
+
+	public static void updateProducts()
+	{
+		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());
+		Collections.sort(data);
+		productList.setListData(data);
+		lblProducts.setText(Integer.toString(data.size()) + " " + lang("window_products_qtt"));
 	}
 }

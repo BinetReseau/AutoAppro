@@ -13,7 +13,7 @@ enum ProductType
 }
 
 /** The product class which holds the informations of a single product type. */
-public class Product implements Serializable {
+public class Product implements Serializable, Comparable<Product> {
 	private static final long serialVersionUID = 4291170913868609146L;
 
 	/** The quantity type for this product. */
@@ -29,5 +29,11 @@ public class Product implements Serializable {
 	public String toString()
 	{
 		return providerID.toString();
+	}
+
+	/* Use this comparison method only for display purposes. */
+	@Override
+	public int compareTo(Product other) {
+		return providerID.toString().compareTo(other.providerID.toString());
 	}
 }

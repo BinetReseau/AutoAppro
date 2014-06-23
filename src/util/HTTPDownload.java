@@ -2,6 +2,7 @@ package util;
 
 import java.io.*;
 import java.net.URL;
+import java.util.concurrent.*;
 
 /** An easy download tool. */
 public class HTTPDownload {
@@ -10,17 +11,35 @@ public class HTTPDownload {
 	/** Read the first line of a file through HTTP.
 	 *
 	 * @param urlString The URL of the file to read.
+	 * @param msTimeout The maximum number of millisecond for this function to terminate,
+	 *   or <code>0</code> to indicate that no timeout shall be used.
 	 * @return The content of the first line of the file,
 	 *   or <code>null</code> if an error happens.
 	 */
-	public static String readFirstLine(String urlString)
+	public static String readFirstLine(String urlString, int msTimeout)
 	{
 		try {
-			URL url = new URL(urlString);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-			String result = reader.readLine();
-			reader.close();
-			return result;
+			final URL url = new URL(urlString);
+			if (msTimeout > 0)
+			{
+				ExecutorService executor = new ForkJoinPool(1);
+				Future<String> result = executor.submit(new Callable<String>() {
+					@Override
+					public String call() throws Exception
+					{
+						BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+						String result = reader.readLine();
+						reader.close();
+						return result;
+					}
+				});
+				return result.get(msTimeout, TimeUnit.MILLISECONDS);
+			} else {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+				String result = reader.readLine();
+				reader.close();
+				return result;
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -56,6 +75,6 @@ public class HTTPDownload {
 		if (args.length > 1)
 			download(args[0], args[1]);
 		else
-			System.out.println(readFirstLine(args[0]));
+			System.out.println(readFirstLine(args[0], 0));
 	}
 }

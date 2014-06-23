@@ -19,6 +19,7 @@ public class AutoAppro
 {
 	public static final String VERSION = "test";
 	private static final String UPDATE_URL = "http://129.104.234.60/AutoAppro/";
+	private static final int HTTP_UPDATE_TIMEOUT = 2000;
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
 	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);
@@ -163,7 +164,7 @@ public class AutoAppro
 		}
 		/* Checking for updates */
 		splash.setStatus(messages.getString("load_updates"), 0.15);
-		String lastVersion = HTTPDownload.readFirstLine(UPDATE_URL + "last.txt");
+		String lastVersion = HTTPDownload.readFirstLine(UPDATE_URL + "last.txt", HTTP_UPDATE_TIMEOUT);
 		if (lastVersion != null)
 		{
 			if (!lastVersion.equals(VERSION))

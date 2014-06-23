@@ -40,6 +40,7 @@ public class SerialFileHandler {
 		try {
 			in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
 			result = in.readObject();
+		} catch (FileNotFoundException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

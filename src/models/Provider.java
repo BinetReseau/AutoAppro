@@ -1,5 +1,7 @@
 package models;
 
+import java.io.Serializable;
+
 /** The abstract class every provider must implement.
  * <p>
  * The main principle is the following :
@@ -13,6 +15,11 @@ package models;
  * At the end of this procedure, {@link #getItems(Retriever)} is called so that
  * the application might get, one by one, all the items (missing list taken into account).
  * {@link #getItems(Retriever)} also clears the list of items so that a new cycle may begin again.
+ * <p>
+ * One important thing you should keep in mind is that the {@link Serializable} results that might
+ * be passed into the {@link Retriever} should implement the functions {@link Object#hashCode()}
+ * and {@link Object#equals(Object)} (even though the hash code may be always the same,
+ * which is not recommended for performance reasons).
  */
 public abstract class Provider
 {

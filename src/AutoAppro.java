@@ -59,7 +59,6 @@ public class AutoAppro
 						throw new IllegalArgumentException("Missing argument for the locale.");
 					Locale newLocale = new Locale(args[++i], args[++i]);
 					MyPreferences.set("locale", newLocale);
-					MyPreferences.save();
 					break;
 				case "-help":
 					System.out.println(USAGE);
@@ -123,7 +122,6 @@ public class AutoAppro
 				provider = (Provider) chosen;
 			}
 			MyPreferences.set("provider", provider.getName());
-			MyPreferences.save();
 		}
 		/* Getting the logger */
 		splash.setStatus(messages.getString("load_logger"), 0.1);
@@ -160,7 +158,6 @@ public class AutoAppro
 				logger = (Logger) chosen;
 			}
 			MyPreferences.set("logger", logger.getName());
-			MyPreferences.save();
 		}
 		/* Checking for updates */
 		splash.setStatus(messages.getString("load_updates"), 0.15);

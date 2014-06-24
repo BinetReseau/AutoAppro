@@ -31,6 +31,13 @@ public class MyPreferences
 			} catch (IOException e) { }
 		}
 		modified = false;
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+		    @Override
+		    public void run()
+		    {
+		        save();
+		    }
+		});
 	}
 
 	/** Get a preference record from its ID key.
@@ -67,7 +74,7 @@ public class MyPreferences
 	}
 
 	/** Save all the new records to the preferences file. */
-	public static void save()
+	private static void save()
 	{
 		synchronized (data)
 		{

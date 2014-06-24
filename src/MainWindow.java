@@ -89,7 +89,18 @@ public class MainWindow
 			JMenu mnHelp = new JMenu(lang("window_menu_hm"));
 			menuBar.add(mnHelp);
 			JMenuItem mntmHelp = new JMenuItem(lang("window_menu_help"));
-			// TODO Help functionality
+			mntmHelp.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					String url = AutoAppro.displayHelp();
+					if (url != null)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("help_content") + "\n" + url,
+								lang("help_title"), JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			});
 			mnHelp.add(mntmHelp);
 			JSeparator separator_1 = new JSeparator();
 			mnHelp.add(separator_1);

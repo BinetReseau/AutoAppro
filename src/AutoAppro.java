@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -215,5 +216,30 @@ public class AutoAppro
 		if (!productsModified) return;
 		SerialFileHandler.writeObject(products, provider.getName() + ".dat");
 		productsModified = false;
+	}
+
+	/** Display the help web-page or return its link.
+	 *
+	 * @return <code>null</code> if the web-page could be opened,
+	 *   its URL otherwise.
+	 */
+	public static String displayHelp()
+	{
+		String url = UPDATE_URL;
+		{
+			Locale locale;
+			Serializable record = MyPreferences.get("locale");
+			if (record != null)
+				locale = (Locale) record;
+			else
+				locale = Locale.getDefault();
+			url += "?lg=" + locale.getLanguage();
+		}
+		try {
+			Desktop.getDesktop().browse(new URI(url));
+		} catch (Exception e) {
+			return url;
+		}
+		return null;
 	}
 }

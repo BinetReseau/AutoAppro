@@ -392,8 +392,7 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			// TODO check if there is some item
-			if (msgStr == null) // if not,
+			if (currentDelivery.isEmpty())
 			{
 				retrieveStatus.setText(lang("status_nothing"));
 				return;

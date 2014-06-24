@@ -69,8 +69,10 @@ public class MainWindow
 			JMenu mnFile = new JMenu(lang("window_menu_file"));
 			menuBar.add(mnFile);
 			JMenuItem mntmChangeProvider = new JMenuItem(lang("window_menu_chg_provider"));
+			// TODO Change provider functionality
 			mnFile.add(mntmChangeProvider);
 			JMenuItem mntmChangeLogger = new JMenuItem(lang("window_menu_chg_logger"));
+			// TODO Change logger functionality
 			mnFile.add(mntmChangeLogger);
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
@@ -86,6 +88,7 @@ public class MainWindow
 			JMenu mnHelp = new JMenu(lang("window_menu_hm"));
 			menuBar.add(mnHelp);
 			JMenuItem mntmHelp = new JMenuItem(lang("window_menu_help"));
+			// TODO Help functionality
 			mnHelp.add(mntmHelp);
 			JSeparator separator_1 = new JSeparator();
 			mnHelp.add(separator_1);
@@ -179,8 +182,10 @@ public class MainWindow
 			JPanel panel_5 = new JPanel();
 			panel_2.add(panel_5, BorderLayout.SOUTH);
 			btnDismiss = new JButton(lang("window_list_dismiss"));
+			// TODO Dismiss functionality
 			panel_5.add(btnDismiss);
 			btnValidate = new JButton(lang("window_list_validate"));
+			// TODO Log functionality
 			panel_5.add(btnValidate);
 			JPanel panel_3 = new JPanel();
 			panel_3.setBorder(new TitledBorder(null, lang("window_products_title"),

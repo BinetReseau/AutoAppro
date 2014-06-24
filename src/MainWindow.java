@@ -318,6 +318,7 @@ public class MainWindow
 					currentRecord.quantity += result.quantity;
 					currentRecord.price += result.price;
 				} else {
+					result.providerID = providerID;
 					currentDelivery.put(providerID, result);
 				}
 			}
@@ -582,7 +583,7 @@ public class MainWindow
 				btnDelete.setEnabled(true);
 				return;
 			}
-			// TODO update the list of products in the delivery
+			table.setModel(new MyTableModel(currentDelivery.values()));
 			btnDismiss.setEnabled(true);
 			btnValidate.setEnabled(true);
 			btnEdit.setEnabled(true);

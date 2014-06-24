@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.locks.*;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
@@ -25,7 +25,7 @@ public class MainWindow
 
 	private static final Pattern quantityPattern;
 	static {
-		quantityPattern = Pattern.compile("\\d+(?:\\.\\d+)?");
+		quantityPattern = Pattern.compile("\\d+(?:[.,]\\d+)?");
 	}
 
 	private static JFrame mainWindow;
@@ -38,6 +38,13 @@ public class MainWindow
 	private static volatile String msgStr;
 	private static volatile Status status;
 	private static HashMap<Serializable, ProviderProduct> currentDelivery;
+	
+	private static final ReentrantLock productEditLock;
+	private static final Condition productEditCondition;
+	static {
+		productEditLock = new ReentrantLock();
+		productEditCondition = productEditLock.newCondition();
+	}
 
 	/** The initializing function for the main window. */
 	public static Runnable setupGUI = new Runnable()
@@ -198,7 +205,7 @@ public class MainWindow
 					}
 					synchronized (AutoAppro.products)
 					{
-						editProduct(myProduct.providerID);
+						editProduct(myProduct.providerID, myProduct);
 					}
 				}
 			});
@@ -260,6 +267,7 @@ public class MainWindow
 		public void addProduct(Serializable providerID, double quantity, int price)
 		{
 			Product currentProduct = getProduct(providerID);
+			if (currentProduct == null) return;
 			ProviderProduct result = new ProviderProduct(), currentRecord;
 			switch (currentProduct.type)
 			{
@@ -279,6 +287,7 @@ public class MainWindow
 					} catch (Exception e) {}
 				} while ((msgStr != null) && (!quantityPattern.matcher(msgStr).matches()));
 				if (msgStr == null) return;
+				msgStr = msgStr.replace(',', '.');
 				result.quantity = currentProduct.mult * Double.parseDouble(msgStr);
 				break;
 			case ROUND_QTT:
@@ -310,7 +319,7 @@ public class MainWindow
 					JOptionPane.QUESTION_MESSAGE);
 			if ((msgStr != null) || (!quantityPattern.matcher(msgStr).matches()))
 			{
-				JOptionPane.showMessageDialog(mainWindow, lang("ask_qtt_error"),
+				JOptionPane.showMessageDialog(mainWindow, lang("error_number_format"),
 						lang("common_error"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -323,26 +332,129 @@ public class MainWindow
 		Product result;
 		synchronized (AutoAppro.products)
 		{
-			while ((result = AutoAppro.products.get(productID)) == null)
+			if ((result = AutoAppro.products.get(productID)) == null)
 			{
-				try {
-					SwingUtilities.invokeAndWait(new Runnable() {
-						@Override
-						public void run()
-						{
-							editProduct(productIDCopy);
-						}
-					});
-				} catch (Exception e) {}
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run()
+					{
+						editProduct(productIDCopy, null);
+					}
+				});
+				productEditLock.lock();
+				productEditCondition.awaitUninterruptibly();
+				productEditLock.unlock();
+				result = AutoAppro.products.get(productID);
 			}
 		}
 		return result;
 	}
 
 	/* Edit the corresponding product, or create it if it is not already in the HashMap */
-	private static void editProduct(Serializable productID)
+	private static void editProduct(Serializable productID, Product currentProduct)
 	{
-		// TODO ... (also set AutoAppro.productsModified if need be)
+		final boolean isNewProduct = (currentProduct == null);
+		final Product myProduct = currentProduct;
+		final Serializable myProductID = productID;
+		final JDialog dialog = new JDialog(mainWindow, lang("product_title"), true);
+		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent winEvt)
+			{
+				if (!isNewProduct)
+					dialog.dispose();
+			}
+		});
+		dialog.setBounds(100, 100, 500, 300);
+		JPanel center = new JPanel(new GridLayout(0, 2, 0, 5));
+		center.add(new JLabel(lang("product_name")));
+		center.add(new JLabel(productID.toString()));
+		center.add(new JLabel(lang("product_type")));
+		final JComboBox<ProductType> productType = new JComboBox<ProductType>(ProductType.values());
+		if (!isNewProduct)
+			productType.setSelectedItem(currentProduct.type);
+		center.add(productType);
+		center.add(new JLabel(lang("product_mult")));
+		double defaultMult = isNewProduct ? 1 : currentProduct.mult;
+		final JTextField productMult = new JTextField(Double.toString(defaultMult));
+		center.add(productMult);
+		center.add(new JLabel(lang("product_barID")));
+		int defaultBarID;
+		if (isNewProduct)
+		{
+			defaultBarID = 1;
+			for (Product p : AutoAppro.products.values())
+			{
+				if (defaultBarID <= p.barID)
+					defaultBarID = p.barID + 1;
+			}
+		} else {
+			defaultBarID = currentProduct.barID;
+		}
+		final JSpinner productBarID = new JSpinner(new SpinnerNumberModel(defaultBarID, 1, 999999, 1));
+		center.add(productBarID);
+		dialog.add(center, BorderLayout.PAGE_START);
+		JPanel validationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		JButton cancel = new JButton(lang("common_cancel"));
+		cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt)
+			{
+				dialog.dispose();
+				if (isNewProduct)
+				{
+					productEditLock.lock();
+					productEditCondition.signal();
+					productEditLock.unlock();
+				}
+			}
+		});
+		validationPanel.add(cancel);
+		JButton validate = new JButton(lang("common_ok"));
+		validate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if (!quantityPattern.matcher(productMult.getText()).matches())
+				{
+					JOptionPane.showMessageDialog(dialog, lang("error_number_format"),
+							lang("common_error"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				double multValue = Double.parseDouble(productMult.getText());
+				if (isNewProduct)
+				{
+					Product toAdd = new Product();
+					toAdd.providerID = myProductID;
+					toAdd.type = (ProductType) productType.getSelectedItem();
+					toAdd.mult = multValue;
+					toAdd.barID = (int) productBarID.getValue();
+					AutoAppro.products.put(myProductID, toAdd);
+					AutoAppro.productsModified = true;
+					dialog.dispose();
+					productEditLock.lock();
+					productEditCondition.signal();
+					productEditLock.unlock();
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run()
+						{
+							updateProducts();
+						}
+					});
+				} else {
+					myProduct.type = (ProductType) productType.getSelectedItem();
+					myProduct.mult = multValue;
+					myProduct.barID = (int) productBarID.getValue();
+					AutoAppro.productsModified = true;
+					dialog.dispose();
+				}
+			}
+		});
+		validationPanel.add(validate);
+		dialog.add(validationPanel, BorderLayout.PAGE_END);
+		dialog.setVisible(true);
 	}
 
 	/* Start a new delivery (non-GUI thread). */
@@ -387,7 +499,7 @@ public class MainWindow
 				break;
 			case WAITING_APPROVAL:
 				(new Thread(updateDelivery)).start();
-				break;
+				return;
 			}
 			btnEdit.setEnabled(true);
 			btnDelete.setEnabled(true);
@@ -451,11 +563,15 @@ public class MainWindow
 			if (currentDelivery.isEmpty())
 			{
 				retrieveStatus.setText(lang("status_nothing"));
+				btnEdit.setEnabled(true);
+				btnDelete.setEnabled(true);
 				return;
 			}
 			// TODO update the list of products in the delivery
 			btnDismiss.setEnabled(true);
 			btnValidate.setEnabled(true);
+			btnEdit.setEnabled(true);
+			btnDelete.setEnabled(true);
 			retrieveStatus.setText(lang("status_ok"));
 		}
 	};

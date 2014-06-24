@@ -1,16 +1,23 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
+import util.*;
+
 /** The main window handler. */
-public class MainWindow {
+public class MainWindow
+{
+	private enum Status
+	{
+		WAITING_CONTENT,
+		WAITING_MISSING,
+		WAITING_APPROVAL
+	}
+
 	private static JFrame mainWindow;
 	private static JButton retrieveContent, retrieveMissing;
 	private static JButton btnDismiss, btnValidate;
@@ -18,6 +25,8 @@ public class MainWindow {
 	private static JLabel retrieveStatus, lblProducts;
 	private static JTable table;
 	private static JList<Product> productList;
+	private static volatile String msgStr;
+	private static volatile Status status;
 
 	/** The initializing function for the main window. */
 	public static Runnable setupGUI = new Runnable()
@@ -89,8 +98,54 @@ public class MainWindow {
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_1, BorderLayout.NORTH);
 			retrieveContent = new JButton(lang("window_retriever_content"));
+			retrieveContent.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					String data;
+					try {
+						data = MyClipBoard.getClipboardText();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_cb1") + "\n" + e.getMessage(),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if (data == null)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_cb2"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					retrieveStatus.setText(lang("common_loading"));
+					disableButtons();
+					msgStr = data;
+					(new Thread(doManualRetrieval)).start();
+				}
+			});
 			panel_1.add(retrieveContent);
 			retrieveMissing = new JButton(lang("window_retriever_missing"));
+			retrieveMissing.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					String data;
+					try {
+						data = MyClipBoard.getClipboardText();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_cb1") + "\n" + e.getMessage(),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if (data == null)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_cb2"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					retrieveStatus.setText(lang("common_loading"));
+					disableButtons();
+					msgStr = data;
+					(new Thread(doMissingRetrieval)).start();
+				}
+			});
 			panel_1.add(retrieveMissing);
 			retrieveStatus = new JLabel(lang("common_loading"));
 			panel_1.add(retrieveStatus);
@@ -149,39 +204,101 @@ public class MainWindow {
 		}
 	};
 
+	/* Start a new delivery (non-GUI thread). */
 	private static Runnable startNewDelivery = new Runnable()
 	{
 		@Override
 		public void run() {
+			msgStr = null;
 			if (AutoAppro.provider.tryAutomaticRetrieve())
-				SwingUtilities.invokeLater(autoRetrieveWorked);
+				status = Status.WAITING_APPROVAL;
 			else
-				SwingUtilities.invokeLater(autoRetrieveIncomplete);
+				status = Status.WAITING_CONTENT;
+			SwingUtilities.invokeLater(updateGUI);
 		}
 	};
 
-	private static Runnable autoRetrieveWorked = new Runnable()
+	/* update the GUI according to the current situation. */
+	private static Runnable updateGUI = new Runnable()
 	{
 		@Override
 		public void run() {
-			btnDismiss.setEnabled(true);
-			btnValidate.setEnabled(true);
+			switch (status)
+			{
+			case WAITING_CONTENT:
+				if (msgStr != null)
+				{
+					JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_content") + "\n" + msgStr,
+							lang("common_error"), JOptionPane.ERROR_MESSAGE);
+				}
+				retrieveContent.setEnabled(true);
+				retrieveStatus.setText(lang("status_need_content"));
+				break;
+			case WAITING_MISSING:
+				if (msgStr != null)
+				{
+					JOptionPane.showMessageDialog(mainWindow, lang("retrieve_error_content") + "\n" + msgStr,
+							lang("common_error"), JOptionPane.ERROR_MESSAGE);
+				}
+				retrieveMissing.setEnabled(true);
+				retrieveStatus.setText(lang("status_need_missing"));
+				break;
+			case WAITING_APPROVAL:
+				updateDelivery();
+				btnDismiss.setEnabled(true);
+				btnValidate.setEnabled(true);
+				retrieveStatus.setText(lang("status_ok"));
+				break;
+			}
 			btnEdit.setEnabled(true);
 			btnDelete.setEnabled(true);
-			retrieveStatus.setText(lang("status_ok"));
 		}
 	};
 
-	private static Runnable autoRetrieveIncomplete = new Runnable()
+	/* Retrieve the contents data from the local variable msgStr (non-GUI thread). */
+	private static Runnable doManualRetrieval = new Runnable()
 	{
 		@Override
 		public void run() {
-			retrieveContent.setEnabled(true);
-			btnEdit.setEnabled(true);
-			btnDelete.setEnabled(true);
-			retrieveStatus.setText(lang("status_need_content"));
+			try {
+				AutoAppro.provider.retrieveFromString(msgStr);
+			} catch (IllegalArgumentException e) {
+				msgStr = e.getMessage();
+				SwingUtilities.invokeLater(updateGUI);
+				return;
+			}
+			if (AutoAppro.provider.useMissingList())
+				status = Status.WAITING_MISSING;
+			else
+				status = Status.WAITING_APPROVAL;
+			msgStr = null;
+			SwingUtilities.invokeLater(updateGUI);
 		}
 	};
+
+	/* Retrieve the missing products data from the local variable msgStr (non-GUI thread). */
+	private static Runnable doMissingRetrieval = new Runnable()
+	{
+		@Override
+		public void run() {
+			try {
+				AutoAppro.provider.retrieveMissing(msgStr);
+			} catch (IllegalArgumentException e) {
+				msgStr = e.getMessage();
+				SwingUtilities.invokeLater(updateGUI);
+				return;
+			}
+			status = Status.WAITING_APPROVAL;
+			msgStr = null;
+			SwingUtilities.invokeLater(updateGUI);
+		}
+	};
+
+	/* Update the list of the products in the delivery. */
+	private static void updateDelivery()
+	{
+		// TODO
+	}
 
 	/* Just a little shortcut ... */
 	private static String lang(String keyword)
@@ -189,6 +306,7 @@ public class MainWindow {
 		return AutoAppro.messages.getString(keyword);
 	}
 
+	/** Update the list of products for the current provider. */
 	public static void updateProducts()
 	{
 		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());

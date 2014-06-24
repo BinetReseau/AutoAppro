@@ -238,7 +238,8 @@ public class MainWindow
 					try {
 						SwingUtilities.invokeAndWait(askQuantity);
 					} catch (Exception e) {}
-				} while (!quantityPattern.matcher(msgStr).matches());
+				} while ((msgStr != null) && (!quantityPattern.matcher(msgStr).matches()));
+				if (msgStr == null) return;
 				result.quantity = currentProduct.mult * Double.parseDouble(msgStr);
 				break;
 			case ROUND_QTT:
@@ -265,6 +266,17 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
+			synchronized (mainWindow)
+			{
+				msgStr = JOptionPane.showInputDialog(mainWindow, lang("ask_qtt_title"),
+						lang("ask_qtt_content") + " " + msgStr + "\n" + lang("ask_qtt_content2"),
+						JOptionPane.QUESTION_MESSAGE);
+				if ((msgStr != null) || (!quantityPattern.matcher(msgStr).matches()))
+				{
+					JOptionPane.showMessageDialog(mainWindow, lang("ask_qtt_error"),
+							lang("common_error"), JOptionPane.ERROR_MESSAGE);
+				}
+			}
 			// TODO ask quantity for msgStr, put it into msgStr.
 		}
 	};

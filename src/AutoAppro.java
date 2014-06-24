@@ -166,10 +166,18 @@ public class AutoAppro
 		{
 			if (!lastVersion.equals(VERSION))
 			{
-				// TODO update the software
+				splash.setStatus(messages.getString("load_updates2"), 0.4);
+				try {
+					HTTPDownload.download(UPDATE_URL + "updater.jar", "updater.jar");
+					Runtime.getRuntime().exec("java -jar updater.jar");
+					return;
+				} catch (Exception e) {
+					splash.setStatus(messages.getString("err_updates"), 0.4);
+					try { Thread.sleep(2000); } catch (InterruptedException e2) { }
+				}
 			}
 		} else {
-			splash.setStatus(messages.getString("err_updates"), 0.1);
+			splash.setStatus(messages.getString("err_updates"), 0.15);
 			try { Thread.sleep(2000); } catch (InterruptedException e) { }
 		}
 		/* Getting the products associated with the current provider */

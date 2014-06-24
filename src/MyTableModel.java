@@ -1,9 +1,10 @@
-import java.util.Collection;
+import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
 
-import models.ProviderProduct;
+import models.*;
 
+/** The model for the table of the main window. */
 @SuppressWarnings("serial")
 public class MyTableModel extends AbstractTableModel
 {
@@ -108,5 +109,29 @@ public class MyTableModel extends AbstractTableModel
 			break;
 		}
 		fireTableCellUpdated(row, col);
+	}
+
+	/** Log all the items.
+	 *
+	 * @return <code>null</code> if the logger is automatic,
+	 *   or the result string to put in the clip-board.
+	 * @throws Exception If an error occurs.
+	 */
+	public String log() throws Exception
+	{
+		ArrayList<LogItem> toLog = new ArrayList<LogItem>(data.length);
+		LogItem toAdd;
+		for (int i = 0; i < data.length; ++i)
+		{
+			if (dataSwitch[i])
+			{
+				toAdd = new LogItem();
+				toAdd.barID = AutoAppro.products.get(data[i].providerID).barID;
+				toAdd.price = data[i].price / 100.0;
+				toAdd.quantity = data[i].quantity;
+				toLog.add(toAdd);
+			}
+		}
+		return AutoAppro.logger.log(toLog);
 	}
 }

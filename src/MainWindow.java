@@ -195,7 +195,32 @@ public class MainWindow
 			});
 			panel_5.add(btnDismiss);
 			btnValidate = new JButton(lang("window_list_validate"));
-			// TODO Log functionality
+			btnValidate.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					MyTableModel oldModel = (MyTableModel) table.getModel();
+					table.setModel(new DefaultTableModel());
+					disableButtons();
+					retrieveStatus.setText(lang("common_loading"));
+					try {
+						String result = oldModel.log();
+						if (result == null)
+						{
+							JOptionPane.showMessageDialog(mainWindow, lang("log_auto"),
+									lang("common_info"), JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							MyClipBoard.setClipboardText(result);
+							JOptionPane.showMessageDialog(mainWindow, lang("log_cb"),
+									lang("common_info"), JOptionPane.INFORMATION_MESSAGE);
+						}
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(mainWindow, lang("log_error") + "\n" + e.getMessage(),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+					}
+					new Thread(startNewDelivery).start();
+				}
+			});
 			panel_5.add(btnValidate);
 			JPanel panel_3 = new JPanel();
 			panel_3.setBorder(new TitledBorder(null, lang("window_products_title"),

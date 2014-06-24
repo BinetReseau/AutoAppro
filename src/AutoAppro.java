@@ -27,9 +27,10 @@ public class AutoAppro
 	private static final Color SPLASH_PRGSS_COLOR = Color.WHITE;
 	private static final Point SPLASH_STATUS_POS = new Point(25, 360);
 	private static final Color SPLASH_STATUS_COLOR = Color.WHITE;
+	
 	/* List of all the available providers and loggers */
-	private static final Provider[] providers = {new Intermarche()};
-	private static final Logger[] loggers = {new Bar2()};
+	public static final Provider[] providers = {new Intermarche()};
+	public static final Logger[] loggers = {new Bar2()};
 
 	private static MySplash splash;
 

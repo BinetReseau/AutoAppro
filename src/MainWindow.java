@@ -70,10 +70,45 @@ public class MainWindow
 			JMenu mnFile = new JMenu(lang("window_menu_file"));
 			menuBar.add(mnFile);
 			JMenuItem mntmChangeProvider = new JMenuItem(lang("window_menu_chg_provider"));
-			// TODO Change provider functionality
+			mntmChangeProvider.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (AutoAppro.providers.length < 2)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("provider_one"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+					} else {
+						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("provider_msg"),
+								lang("provider_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
+								AutoAppro.providers, AutoAppro.providers[0]);
+						if (chosen == null) return;
+						MyPreferences.set("provider", ((Provider) chosen).getName());
+						AutoAppro.saveProducts();
+						System.exit(0);
+					}
+				}
+			});
 			mnFile.add(mntmChangeProvider);
 			JMenuItem mntmChangeLogger = new JMenuItem(lang("window_menu_chg_logger"));
-			// TODO Change logger functionality
+			mntmChangeLogger.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					if (AutoAppro.loggers.length < 2)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("logger_one"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+					} else {
+						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("provider_msg"),
+								lang("provider_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
+								AutoAppro.providers, AutoAppro.providers[0]);
+						if (chosen == null) return;
+						MyPreferences.set("logger", ((Logger) chosen).getName());
+						AutoAppro.saveProducts();
+						System.exit(0);
+					}
+				}
+			});
 			mnFile.add(mntmChangeLogger);
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
@@ -82,6 +117,7 @@ public class MainWindow
 				@Override
 				public void actionPerformed(ActionEvent arg0)
 				{
+					AutoAppro.saveProducts();
 					System.exit(0);
 				}
 			});

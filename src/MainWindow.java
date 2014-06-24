@@ -6,6 +6,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import models.*;
 import util.*;
 
 /** The main window handler. */
@@ -244,10 +245,7 @@ public class MainWindow
 				retrieveStatus.setText(lang("status_need_missing"));
 				break;
 			case WAITING_APPROVAL:
-				updateDelivery();
-				btnDismiss.setEnabled(true);
-				btnValidate.setEnabled(true);
-				retrieveStatus.setText(lang("status_ok"));
+				(new Thread(updateDelivery)).start();
 				break;
 			}
 			btnEdit.setEnabled(true);
@@ -294,11 +292,33 @@ public class MainWindow
 		}
 	};
 
-	/* Update the list of the products in the delivery. */
-	private static void updateDelivery()
+	/* Update the list of the products in the delivery (non-GUI thread). */
+	private static Runnable updateDelivery = new Runnable()
 	{
-		// TODO
-	}
+		@Override
+		public void run() {
+			// TODO make retriever
+			AutoAppro.provider.getItems(null);
+			SwingUtilities.invokeLater(deliveryUpdated);
+		}
+	};
+
+	/* At the end of the delivery update. */
+	private static Runnable deliveryUpdated = new Runnable()
+	{
+		@Override
+		public void run() {
+			// TODO check if there is some item
+			if (msgStr == null) // if not,
+			{
+				retrieveStatus.setText(lang("status_nothing"));
+				return;
+			}
+			btnDismiss.setEnabled(true);
+			btnValidate.setEnabled(true);
+			retrieveStatus.setText(lang("status_ok"));
+		}
+	};
 
 	/* Just a little shortcut ... */
 	private static String lang(String keyword)

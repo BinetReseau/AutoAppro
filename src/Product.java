@@ -4,12 +4,12 @@ import java.io.Serializable;
 enum ProductType
 {
 	/** Free product. */ OPEN,
-	/** Normal product. */ NORMAL,
-	/** Constant quantity product (e.g. paid by weight, logged with number). */ CONSTANT_QTT,
+	/** Normal product (mult used). */ NORMAL,
+	/** Constant quantity product (e.g. paid by weight, logged with number) (mult used). */ CONSTANT_QTT,
 	/** Ask the quantity.
-	 * (e.g. fruits that are chosen by weight and logged with number of individual fruit). */ ASK_QTT,
+	 * (e.g. fruits that are chosen by weight and logged with number of individual fruit) (mult used). */ ASK_QTT,
 	/** If you do not want to ask the exact number of fruits, take this option.
-	 * You will also have to indicate the average number of weight by fruit. */ ROUND_QTT
+	 * You will also have to indicate the average number of weight by fruit (mult used before roundup). */ ROUND_QTT
 }
 
 /** The product class which holds the informations of a single product type. */

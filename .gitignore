@@ -12,8 +12,8 @@
 hs_err_pid*
 /bin/*
 
-# Preference file
-prefs.dat
+# Preference file and provider data files
+*.dat
 
 # Files that ought to be in the future JAR package
 !/bin/MessagesBundle*

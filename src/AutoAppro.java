@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -171,7 +172,13 @@ public class AutoAppro
 				splash.setStatus(messages.getString("load_updates2"), 0.4);
 				try {
 					HTTPDownload.download(UPDATE_URL + "updater.jar", "updater.jar");
-					Runtime.getRuntime().exec("java -jar updater.jar");
+					try {
+						Runtime.getRuntime().exec("java -jar updater.jar");
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(null, messages.getString("error_launch") + "\n" +
+								messages.getString("error_launch2") + " updater.jar",
+								messages.getString("common_error"), JOptionPane.ERROR_MESSAGE);
+					}
 					return;
 				} catch (Exception e) {
 					splash.setStatus(messages.getString("err_updates"), 0.4);

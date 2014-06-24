@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,6 +86,15 @@ public class MainWindow
 						if (chosen == null) return;
 						MyPreferences.set("provider", ((Provider) chosen).getName());
 						AutoAppro.saveProducts();
+						String filename = AutoAppro.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+						filename = (new File(filename)).getName();
+						try {
+							Runtime.getRuntime().exec("java -jar " + filename);
+						} catch (IOException e1) {
+							JOptionPane.showMessageDialog(mainWindow, lang("error_launch") + "\n" +
+									lang("error_launch2") + " " + filename,
+									lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						}
 						System.exit(0);
 					}
 				}
@@ -105,6 +116,15 @@ public class MainWindow
 						if (chosen == null) return;
 						MyPreferences.set("logger", ((Logger) chosen).getName());
 						AutoAppro.saveProducts();
+						String filename = AutoAppro.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+						filename = (new File(filename)).getName();
+						try {
+							Runtime.getRuntime().exec("java -jar " + filename);
+						} catch (IOException e1) {
+							JOptionPane.showMessageDialog(mainWindow, lang("error_launch") + "\n" +
+									lang("error_launch2") + " " + filename,
+									lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						}
 						System.exit(0);
 					}
 				}

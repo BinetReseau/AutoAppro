@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
@@ -110,7 +111,8 @@ public class MainWindow
 			retrieveContent = new JButton(lang("window_retriever_content"));
 			retrieveContent.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
+				public void actionPerformed(ActionEvent arg0)
+				{
 					String data;
 					try {
 						data = MyClipBoard.getClipboardText();
@@ -135,7 +137,8 @@ public class MainWindow
 			retrieveMissing = new JButton(lang("window_retriever_missing"));
 			retrieveMissing.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
+				public void actionPerformed(ActionEvent arg0)
+				{
 					String data;
 					try {
 						data = MyClipBoard.getClipboardText();
@@ -182,8 +185,44 @@ public class MainWindow
 			lblProducts = new JLabel();
 			panel_4.add(lblProducts);
 			btnEdit = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_info.png")));
+			btnEdit.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					Product myProduct = productList.getSelectedValue();
+					if (myProduct == null)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("window_retriever_nosel"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					synchronized (AutoAppro.products)
+					{
+						editProduct(myProduct.providerID);
+					}
+				}
+			});
 			panel_4.add(btnEdit);
 			btnDelete = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_delete.png")));
+			btnDelete.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					Product myProduct = productList.getSelectedValue();
+					if (myProduct == null)
+					{
+						JOptionPane.showMessageDialog(mainWindow, lang("window_retriever_nosel"),
+								lang("common_error"), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					synchronized (AutoAppro.products)
+					{
+						AutoAppro.products.remove(myProduct.providerID);
+						AutoAppro.productsModified = true;
+					}
+					updateProducts();
+				}
+			});
 			panel_4.add(btnDelete);
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -266,27 +305,44 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			synchronized (mainWindow)
+			msgStr = JOptionPane.showInputDialog(mainWindow, lang("ask_qtt_title"),
+					lang("ask_qtt_content") + " " + msgStr + "\n" + lang("ask_qtt_content2"),
+					JOptionPane.QUESTION_MESSAGE);
+			if ((msgStr != null) || (!quantityPattern.matcher(msgStr).matches()))
 			{
-				msgStr = JOptionPane.showInputDialog(mainWindow, lang("ask_qtt_title"),
-						lang("ask_qtt_content") + " " + msgStr + "\n" + lang("ask_qtt_content2"),
-						JOptionPane.QUESTION_MESSAGE);
-				if ((msgStr != null) || (!quantityPattern.matcher(msgStr).matches()))
-				{
-					JOptionPane.showMessageDialog(mainWindow, lang("ask_qtt_error"),
-							lang("common_error"), JOptionPane.ERROR_MESSAGE);
-				}
+				JOptionPane.showMessageDialog(mainWindow, lang("ask_qtt_error"),
+						lang("common_error"), JOptionPane.ERROR_MESSAGE);
 			}
-			// TODO ask quantity for msgStr, put it into msgStr.
 		}
 	};
 
 	/* Get the product from the providerID, or create a new one if necessary (non-GUI thread). */
 	private static Product getProduct(Serializable productID)
 	{
-		
-		// TODO
-		return null;
+		final Serializable productIDCopy = productID;
+		Product result;
+		synchronized (AutoAppro.products)
+		{
+			while ((result = AutoAppro.products.get(productID)) == null)
+			{
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override
+						public void run()
+						{
+							editProduct(productIDCopy);
+						}
+					});
+				} catch (Exception e) {}
+			}
+		}
+		return result;
+	}
+
+	/* Edit the corresponding product, or create it if it is not already in the HashMap */
+	private static void editProduct(Serializable productID)
+	{
+		// TODO ... (also set AutoAppro.productsModified if need be)
 	}
 
 	/* Start a new delivery (non-GUI thread). */
@@ -413,7 +469,11 @@ public class MainWindow
 	/** Update the list of products for the current provider. */
 	public static void updateProducts()
 	{
-		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());
+		Vector<Product> data;
+		synchronized (AutoAppro.products)
+		{
+			data = new Vector<Product>(AutoAppro.products.values());
+		}
 		Collections.sort(data);
 		productList.setListData(data);
 		lblProducts.setText(Integer.toString(data.size()) + " " + lang("window_products_qtt"));

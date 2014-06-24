@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.DefaultTableModel;
 
 import models.*;
 import util.*;
@@ -177,12 +178,21 @@ public class MainWindow
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_2);
 			panel_2.setLayout(new BorderLayout(0, 0));
-			table = new JTable();
-			panel_2.add(table, BorderLayout.CENTER);
+			JScrollPane tableScroll = new JScrollPane(table = new JTable());
+			panel_2.add(tableScroll, BorderLayout.CENTER);
 			JPanel panel_5 = new JPanel();
 			panel_2.add(panel_5, BorderLayout.SOUTH);
 			btnDismiss = new JButton(lang("window_list_dismiss"));
-			// TODO Dismiss functionality
+			btnDismiss.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					table.setModel(new DefaultTableModel());
+					disableButtons();
+					retrieveStatus.setText(lang("common_loading"));
+					new Thread(startNewDelivery).start();
+				}
+			});
 			panel_5.add(btnDismiss);
 			btnValidate = new JButton(lang("window_list_validate"));
 			// TODO Log functionality

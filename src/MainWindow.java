@@ -1,7 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -19,6 +22,11 @@ public class MainWindow
 		WAITING_APPROVAL
 	}
 
+	private static final Pattern quantityPattern;
+	static {
+		quantityPattern = Pattern.compile("\\d+(?:\\.\\d+)?");
+	}
+
 	private static JFrame mainWindow;
 	private static JButton retrieveContent, retrieveMissing;
 	private static JButton btnDismiss, btnValidate;
@@ -28,6 +36,7 @@ public class MainWindow
 	private static JList<Product> productList;
 	private static volatile String msgStr;
 	private static volatile Status status;
+	private static HashMap<Serializable, ProviderProduct> currentDelivery;
 
 	/** The initializing function for the main window. */
 	public static Runnable setupGUI = new Runnable()
@@ -205,11 +214,75 @@ public class MainWindow
 		}
 	};
 
+	/* The retriever that is used to retrieve the product list. */
+	private static Retriever retriever = new Retriever()
+	{
+		@Override
+		public void addProduct(Serializable providerID, double quantity, int price)
+		{
+			Product currentProduct = getProduct(providerID);
+			ProviderProduct result = new ProviderProduct(), currentRecord;
+			switch (currentProduct.type)
+			{
+			case OPEN:
+				return;
+			case NORMAL:
+				result.quantity = currentProduct.mult * quantity;
+				break;
+			case CONSTANT_QTT:
+				result.quantity = currentProduct.mult;
+				break;
+			case ASK_QTT:
+				do {
+					msgStr = providerID.toString();
+					try {
+						SwingUtilities.invokeAndWait(askQuantity);
+					} catch (Exception e) {}
+				} while (!quantityPattern.matcher(msgStr).matches());
+				result.quantity = currentProduct.mult * Double.parseDouble(msgStr);
+				break;
+			case ROUND_QTT:
+				result.quantity = (double) Math.round(currentProduct.mult * quantity);
+				break;
+			}
+			result.price = price;
+			synchronized (currentDelivery)
+			{
+				currentRecord = currentDelivery.get(providerID);
+				if (currentRecord != null)
+				{
+					currentRecord.quantity += result.quantity;
+					currentRecord.price += result.price;
+				} else {
+					currentDelivery.put(providerID, result);
+				}
+			}
+		}
+	};
+
+	/* Ask the quantity for a product. */
+	private static Runnable askQuantity = new Runnable()
+	{
+		@Override
+		public void run() {
+			// TODO ask quantity for msgStr, put it into msgStr.
+		}
+	};
+
+	/* Get the product from the providerID, or create a new one if necessary (non-GUI thread). */
+	private static Product getProduct(Serializable productID)
+	{
+		
+		// TODO
+		return null;
+	}
+
 	/* Start a new delivery (non-GUI thread). */
 	private static Runnable startNewDelivery = new Runnable()
 	{
 		@Override
 		public void run() {
+			currentDelivery = new HashMap<Serializable, ProviderProduct>();
 			msgStr = null;
 			if (AutoAppro.provider.tryAutomaticRetrieve())
 				status = Status.WAITING_APPROVAL;
@@ -297,8 +370,7 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			// TODO make retriever
-			AutoAppro.provider.getItems(null);
+			AutoAppro.provider.getItems(retriever);
 			SwingUtilities.invokeLater(deliveryUpdated);
 		}
 	};
@@ -314,6 +386,7 @@ public class MainWindow
 				retrieveStatus.setText(lang("status_nothing"));
 				return;
 			}
+			// TODO update the list of products in the delivery
 			btnDismiss.setEnabled(true);
 			btnValidate.setEnabled(true);
 			retrieveStatus.setText(lang("status_ok"));

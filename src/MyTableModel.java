@@ -14,10 +14,18 @@ public class MyTableModel extends AbstractTableModel
 
 	public MyTableModel(Collection<ProviderProduct> initialData)
 	{
-		data = new ProviderProduct[initialData.size()];
-		dataSwitch = new boolean[initialData.size()];
+		ArrayList<ProviderProduct> sortedData = new ArrayList<ProviderProduct>(initialData);
+		Collections.sort(sortedData, new Comparator<ProviderProduct>() {
+			@Override
+			public int compare(ProviderProduct o1, ProviderProduct o2)
+			{
+				return o1.providerID.toString().compareTo(o2.providerID.toString());
+			}
+		});
+		data = new ProviderProduct[sortedData.size()];
+		dataSwitch = new boolean[sortedData.size()];
 		int i = 0;
-		for (ProviderProduct p : initialData)
+		for (ProviderProduct p : sortedData)
 		{
 			data[i] = p;
 			dataSwitch[i] = true;

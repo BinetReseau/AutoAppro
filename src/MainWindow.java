@@ -365,8 +365,13 @@ public class MainWindow
 								if (checker.check(p.toString()))
 									resultList.add(p);
 							}
-							results.setModel(new DefaultComboBoxModel<Product>(resultList));
-							results.setSelectedIndex(0);
+							if (resultList.isEmpty())
+							{
+								results.setModel(new DefaultComboBoxModel<Product>());
+							} else {
+								results.setModel(new DefaultComboBoxModel<Product>(resultList));
+								results.setSelectedIndex(0);
+							}
 						}
 					});
 					searchPanel.add(search, BorderLayout.CENTER);
@@ -513,6 +518,9 @@ public class MainWindow
 		{
 			if ((result = AutoAppro.products.get(productID)) == null)
 			{
+				/* Try to find another that has a similar name */
+				// TODO
+				/* Else, ask */
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run()

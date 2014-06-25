@@ -29,6 +29,8 @@ public class MainWindow
 		quantityPattern = Pattern.compile("\\d+(?:[.,]\\d+)?");
 	}
 
+	private static final int SIMILARITY_CHECK_ERROR = 3;
+
 	private static JFrame mainWindow;
 	private static JButton retrieveContent, retrieveMissing;
 	private static JButton btnDismiss, btnValidate;
@@ -519,6 +521,38 @@ public class MainWindow
 			if ((result = AutoAppro.products.get(productID)) == null)
 			{
 				/* Try to find another that has a similar name */
+				for (Product p : AutoAppro.products.values())
+				{
+					if (SimilarityChecker.isSimilarDel(productID.toString(), p.toString(), SIMILARITY_CHECK_ERROR))
+					{
+						msgStr = lang("sim_content1") + " " + productID.toString() + "\n" +
+								lang("sim_content2") + " " + p.toString();
+						while ((msgStr != null) && (!msgStr.equals("yes")))
+						{
+							try {
+								SwingUtilities.invokeAndWait(askSimilar);
+							} catch (Exception e) {}
+						}
+						if (msgStr != null)
+						{
+							Product newProduct = new Product();
+							newProduct.providerID = productID;
+							newProduct.type = p.type;
+							newProduct.barID = p.barID;
+							newProduct.mult = p.mult;
+							AutoAppro.products.put(productID, newProduct);
+							AutoAppro.productsModified = true;
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run()
+								{
+									updateProducts();
+								}
+							});
+							return newProduct;
+						}
+					}
+				}
 				// TODO
 				/* Else, ask */
 				SwingUtilities.invokeLater(new Runnable() {
@@ -536,6 +570,21 @@ public class MainWindow
 		}
 		return result;
 	}
+
+	/* Ask the similarity question that is in msgStr, and put "yes" or null in it in response. */
+	private static Runnable askSimilar = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			int answer = JOptionPane.showConfirmDialog(mainWindow, msgStr, lang("sim_title"),
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (answer == JOptionPane.YES_OPTION)
+				msgStr = "yes";
+			else
+				msgStr = null;
+		}
+	};
 
 	/* Edit the corresponding product, or create it if it is not already in the HashMap */
 	private static void editProduct(Serializable productID, Product currentProduct)

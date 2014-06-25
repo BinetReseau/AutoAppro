@@ -1,0 +1,2 @@
+Main-Class: AutoAppro
+SplashScreen-Image: splash.png

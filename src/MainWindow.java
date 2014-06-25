@@ -34,7 +34,7 @@ public class MainWindow
 	private static JFrame mainWindow;
 	private static JButton retrieveContent, retrieveMissing;
 	private static JButton btnDismiss, btnValidate;
-	private static JButton btnEdit, btnDelete;
+	private static JButton btnEdit, btnDelete, btnSearch;
 	private static JLabel retrieveStatus, lblProducts;
 	private static JTable table;
 	private static JList<Product> productList;
@@ -74,7 +74,7 @@ public class MainWindow
 			JMenuItem mntmChangeProvider = new JMenuItem(lang("window_menu_chg_provider"));
 			mntmChangeProvider.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(ActionEvent evt) {
 					if (AutoAppro.providers.length < 2)
 					{
 						JOptionPane.showMessageDialog(mainWindow, lang("provider_one"),
@@ -90,7 +90,7 @@ public class MainWindow
 						filename = (new File(filename)).getName();
 						try {
 							Runtime.getRuntime().exec("java -jar " + filename);
-						} catch (IOException e1) {
+						} catch (IOException e) {
 							JOptionPane.showMessageDialog(mainWindow, lang("error_launch") + "\n" +
 									lang("error_launch2") + " " + filename,
 									lang("common_error"), JOptionPane.ERROR_MESSAGE);
@@ -103,7 +103,7 @@ public class MainWindow
 			JMenuItem mntmChangeLogger = new JMenuItem(lang("window_menu_chg_logger"));
 			mntmChangeLogger.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(ActionEvent evt)
 				{
 					if (AutoAppro.loggers.length < 2)
 					{
@@ -120,7 +120,7 @@ public class MainWindow
 						filename = (new File(filename)).getName();
 						try {
 							Runtime.getRuntime().exec("java -jar " + filename);
-						} catch (IOException e1) {
+						} catch (IOException e) {
 							JOptionPane.showMessageDialog(mainWindow, lang("error_launch") + "\n" +
 									lang("error_launch2") + " " + filename,
 									lang("common_error"), JOptionPane.ERROR_MESSAGE);
@@ -135,7 +135,7 @@ public class MainWindow
 			JMenuItem mntmExit = new JMenuItem(lang("window_menu_exit"));
 			mntmExit.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					AutoAppro.saveProducts();
 					System.exit(0);
@@ -147,7 +147,7 @@ public class MainWindow
 			JMenuItem mntmHelp = new JMenuItem(lang("window_menu_help"));
 			mntmHelp.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					String url = AutoAppro.displayHelp();
 					if (url != null)
@@ -163,7 +163,7 @@ public class MainWindow
 			JMenuItem mntmAbout = new JMenuItem(lang("window_menu_about"));
 			mntmAbout.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(ActionEvent evt)
 				{
 					JOptionPane.showMessageDialog(mainWindow, lang("about_c1") + AutoAppro.VERSION +
 							"\n" + lang("about_c2"), lang("about_title"), JOptionPane.INFORMATION_MESSAGE);
@@ -189,7 +189,7 @@ public class MainWindow
 			retrieveContent = new JButton(lang("window_retriever_content"));
 			retrieveContent.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					String data;
 					try {
@@ -215,7 +215,7 @@ public class MainWindow
 			retrieveMissing = new JButton(lang("window_retriever_missing"));
 			retrieveMissing.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					String data;
 					try {
@@ -252,7 +252,7 @@ public class MainWindow
 			btnDismiss = new JButton(lang("window_list_dismiss"));
 			btnDismiss.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					table.setModel(new DefaultTableModel());
 					disableButtons();
@@ -264,7 +264,7 @@ public class MainWindow
 			btnValidate = new JButton(lang("window_list_validate"));
 			btnValidate.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					MyTableModel oldModel = (MyTableModel) table.getModel();
 					table.setModel(new DefaultTableModel());
@@ -301,7 +301,7 @@ public class MainWindow
 			btnEdit = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_info.png")));
 			btnEdit.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0)
+				public void actionPerformed(ActionEvent evt)
 				{
 					Product myProduct = productList.getSelectedValue();
 					if (myProduct == null)
@@ -320,7 +320,7 @@ public class MainWindow
 			btnDelete = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_delete.png")));
 			btnDelete.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(ActionEvent evt)
 				{
 					Product myProduct = productList.getSelectedValue();
 					if (myProduct == null)
@@ -338,6 +338,16 @@ public class MainWindow
 				}
 			});
 			panel_4.add(btnDelete);
+			btnSearch = new JButton(new ImageIcon(AutoAppro.class.getResource("icon_search.png")));
+			btnSearch.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent evt)
+				{
+					// TODO Search function
+				}
+			});
+			// TODO
+			panel_4.add(btnSearch);
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			panel_3.add(productList, BorderLayout.CENTER);
@@ -355,6 +365,7 @@ public class MainWindow
 		btnValidate.setEnabled(false);
 		btnEdit.setEnabled(false);
 		btnDelete.setEnabled(false);
+		btnSearch.setEnabled(false);
 	}
 
 	/** The displaying function for the main window. */
@@ -611,6 +622,7 @@ public class MainWindow
 			}
 			btnEdit.setEnabled(true);
 			btnDelete.setEnabled(true);
+			btnSearch.setEnabled(true);
 		}
 	};
 
@@ -673,6 +685,7 @@ public class MainWindow
 				retrieveStatus.setText(lang("status_nothing"));
 				btnEdit.setEnabled(true);
 				btnDelete.setEnabled(true);
+				btnSearch.setEnabled(true);
 				return;
 			}
 			table.setModel(new MyTableModel(currentDelivery.values()));
@@ -680,6 +693,7 @@ public class MainWindow
 			btnValidate.setEnabled(true);
 			btnEdit.setEnabled(true);
 			btnDelete.setEnabled(true);
+			btnSearch.setEnabled(true);
 			retrieveStatus.setText(lang("status_ok"));
 		}
 	};

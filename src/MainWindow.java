@@ -3,9 +3,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.locks.*;
 import java.util.regex.Pattern;
 
@@ -306,7 +304,7 @@ public class MainWindow
 					Product myProduct = productList.getSelectedValue();
 					if (myProduct == null)
 					{
-						JOptionPane.showMessageDialog(mainWindow, lang("window_retriever_nosel"),
+						JOptionPane.showMessageDialog(mainWindow, lang("window_products_nosel"),
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -325,7 +323,7 @@ public class MainWindow
 					Product myProduct = productList.getSelectedValue();
 					if (myProduct == null)
 					{
-						JOptionPane.showMessageDialog(mainWindow, lang("window_retriever_nosel"),
+						JOptionPane.showMessageDialog(mainWindow, lang("window_products_nosel"),
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -343,10 +341,72 @@ public class MainWindow
 				@Override
 				public void actionPerformed(ActionEvent evt)
 				{
-					// TODO Search function
+					final JDialog dialog = new JDialog(mainWindow, lang("search_title"), true);
+					dialog.setBounds(100, 100, 400, 150);
+					JPanel inner = new JPanel();
+					inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
+					JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
+					searchPanel.add(new JLabel(lang("search_key")), BorderLayout.LINE_START);
+					final JTextField search = new JTextField();
+					final JComboBox<Product> results = new JComboBox<Product>();
+					search.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent evt)
+						{
+							if (search.getText().isEmpty())
+							{
+								results.setModel(new DefaultComboBoxModel<Product>());
+								return;
+							}
+							KeyworkCheck checker = new KeyworkCheck(search.getText().split(" "));
+							Vector<Product> resultList = new Vector<Product>(32);
+							for (Product p : AutoAppro.products.values())
+							{
+								if (checker.check(p.toString()))
+									resultList.add(p);
+							}
+							results.setModel(new DefaultComboBoxModel<Product>(resultList));
+							results.setSelectedIndex(0);
+						}
+					});
+					searchPanel.add(search, BorderLayout.CENTER);
+					inner.add(searchPanel);
+					JPanel resultsPanel = new JPanel(new BorderLayout(5, 5));
+					resultsPanel.add(new JLabel(lang("search_results")), BorderLayout.LINE_START);
+					resultsPanel.add(results, BorderLayout.CENTER);
+					inner.add(resultsPanel);
+					dialog.add(inner, BorderLayout.PAGE_START);
+					JPanel endingButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+					JButton bCancel = new JButton(lang("common_cancel"));
+					bCancel.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent evt)
+						{
+							dialog.dispose();
+						}
+					});
+					endingButtons.add(bCancel);
+					JButton bOK = new JButton(lang("common_ok"));
+					bOK.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent evt)
+						{
+							Object item = results.getSelectedItem();
+							if (item == null)
+							{
+								JOptionPane.showMessageDialog(dialog, lang("window_products_nosel"),
+										lang("common_error"), JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							productList.setSelectedValue(item, true);
+							dialog.dispose();
+						}
+					});
+					endingButtons.add(bOK);
+					dialog.add(endingButtons, BorderLayout.PAGE_END);
+					dialog.setVisible(true);
 				}
 			});
-			// TODO
 			panel_4.add(btnSearch);
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

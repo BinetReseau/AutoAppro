@@ -358,7 +358,7 @@ public class MainWindow
 								results.setModel(new DefaultComboBoxModel<Product>());
 								return;
 							}
-							KeyworkCheck checker = new KeyworkCheck(search.getText().split(" "));
+							KeywordChecker checker = new KeywordChecker(search.getText().split(" "));
 							Vector<Product> resultList = new Vector<Product>(32);
 							for (Product p : AutoAppro.products.values())
 							{

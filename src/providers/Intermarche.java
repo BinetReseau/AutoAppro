@@ -16,7 +16,7 @@ public class Intermarche extends Provider
 
 	static {
 		pricePattern = Pattern.compile("(\\d+)[,.](\\d{2}) €");
-		qttPattern = Pattern.compile("(\\d+(?:[,.]\\d+)?)(?:\\w*k?g)?");
+		qttPattern = Pattern.compile("(\\d+(?:[,.]\\d+)?)(?:\\s*k?g)?");
 	}
 
 	private HashMap<String, LinkedList<ProviderProduct>> products;

@@ -329,11 +329,8 @@ public class MainWindow
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					synchronized (AutoAppro.products)
-					{
-						AutoAppro.products.remove(myProduct.providerID);
-						AutoAppro.productsModified = true;
-					}
+					AutoAppro.products.remove(myProduct.providerID);
+					AutoAppro.productsModified = true;
 					updateProducts();
 				}
 			});
@@ -542,13 +539,17 @@ public class MainWindow
 							newProduct.mult = p.mult;
 							AutoAppro.products.put(productID, newProduct);
 							AutoAppro.productsModified = true;
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run()
-								{
-									updateProducts();
-								}
-							});
+							try {
+								SwingUtilities.invokeAndWait(new Runnable() {
+									@Override
+									public void run()
+									{
+										updateProducts();
+									}
+								});
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							return newProduct;
 						}
 					}
@@ -668,16 +669,20 @@ public class MainWindow
 					AutoAppro.products.put(myProductID, toAdd);
 					AutoAppro.productsModified = true;
 					dialog.dispose();
+					try {
+						SwingUtilities.invokeAndWait(new Runnable() {
+							@Override
+							public void run()
+							{
+								updateProducts();
+							}
+						});
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					productEditLock.lock();
 					productEditCondition.signal();
 					productEditLock.unlock();
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run()
-						{
-							updateProducts();
-						}
-					});
 				} else {
 					myProduct.type = (ProductType) productType.getSelectedItem();
 					myProduct.mult = multValue;
@@ -823,11 +828,7 @@ public class MainWindow
 	/** Update the list of products for the current provider. */
 	public static void updateProducts()
 	{
-		Vector<Product> data;
-		synchronized (AutoAppro.products)
-		{
-			data = new Vector<Product>(AutoAppro.products.values());
-		}
+		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());
 		Collections.sort(data);
 		productList.setListData(data);
 		lblProducts.setText(Integer.toString(data.size()) + " " + lang("window_products_qtt"));

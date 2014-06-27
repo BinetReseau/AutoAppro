@@ -565,6 +565,17 @@ public class MainWindow
 				productEditLock.lock();
 				productEditCondition.awaitUninterruptibly();
 				productEditLock.unlock();
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override
+						public void run()
+						{
+							updateProducts();
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				result = AutoAppro.products.get(productID);
 			}
 		}
@@ -669,17 +680,6 @@ public class MainWindow
 					AutoAppro.products.put(myProductID, toAdd);
 					AutoAppro.productsModified = true;
 					dialog.dispose();
-					try {
-						SwingUtilities.invokeAndWait(new Runnable() {
-							@Override
-							public void run()
-							{
-								updateProducts();
-							}
-						});
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 					productEditLock.lock();
 					productEditCondition.signal();
 					productEditLock.unlock();

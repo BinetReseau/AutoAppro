@@ -553,7 +553,6 @@ public class MainWindow
 						}
 					}
 				}
-				// TODO
 				/* Else, ask */
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override

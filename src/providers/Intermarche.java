@@ -69,6 +69,8 @@ public class Intermarche extends Provider
 				if (!matcher.matches())
 					throw new IllegalArgumentException("Bad quantity : " + line);
 				current.quantity = Double.parseDouble(matcher.group(1));
+				if (elements[2].contains("kg"))
+					current.quantity *= 1000;
 				elements[0] = elements[0].trim();
 				current.providerID = elements[0];
 				/* Append the result to the list in the hash map */
@@ -117,10 +119,14 @@ public class Intermarche extends Provider
 				if (!matcher.matches())
 					throw new IllegalArgumentException("Bad quantity (3) : " + line);
 				double startQtt = Double.parseDouble(matcher.group(1));
+				if (elements[3].contains("kg"))
+					startQtt *= 1000;
 				matcher = qttPattern.matcher(elements[4].trim());
 				if (!matcher.matches())
 					throw new IllegalArgumentException("Bad quantity (4) : " + line);
 				double endQtt = Double.parseDouble(matcher.group(1));
+				if (elements[4].contains("kg"))
+					endQtt *= 1000;
 				/* We try to find the same product */
 				String simKey = elements[1].toUpperCase() + " - " + elements[2];
 				LinkedList<ProviderProduct> list = null;

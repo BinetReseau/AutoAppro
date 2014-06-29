@@ -614,19 +614,20 @@ public class MainWindow
 			}
 		});
 		dialog.setBounds(100, 100, 500, 300);
-		JPanel center = new JPanel(new GridLayout(0, 2, 0, 5));
-		center.add(new JLabel(lang("product_name")));
-		center.add(new JLabel(productID.toString()));
-		center.add(new JLabel(lang("product_type")));
+		JPanel center = new JPanel();
+		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+		center.add(new JLabel(lang("product_name") + " " + productID.toString()));
+		JPanel fields = new JPanel(new GridLayout(0, 2, 0, 5));
+		fields.add(new JLabel(lang("product_type")));
 		final JComboBox<ProductType> productType = new JComboBox<ProductType>(ProductType.values());
 		if (!isNewProduct)
 			productType.setSelectedItem(currentProduct.type);
-		center.add(productType);
-		center.add(new JLabel(lang("product_mult")));
+		fields.add(productType);
+		fields.add(new JLabel(lang("product_mult")));
 		double defaultMult = isNewProduct ? 1 : currentProduct.mult;
 		final JTextField productMult = new JTextField(Double.toString(defaultMult));
-		center.add(productMult);
-		center.add(new JLabel(lang("product_barID")));
+		fields.add(productMult);
+		fields.add(new JLabel(lang("product_barID")));
 		int defaultBarID;
 		if (isNewProduct)
 		{
@@ -640,7 +641,8 @@ public class MainWindow
 			defaultBarID = currentProduct.barID;
 		}
 		final JSpinner productBarID = new JSpinner(new SpinnerNumberModel(defaultBarID, 1, 999999, 1));
-		center.add(productBarID);
+		fields.add(productBarID);
+		center.add(fields);
 		dialog.add(center, BorderLayout.PAGE_START);
 		JPanel validationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		JButton cancel = new JButton(lang("common_cancel"));

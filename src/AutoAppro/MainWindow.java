@@ -644,8 +644,7 @@ public class MainWindow
 		}
 		final LoggerPanel loggerPanel = AutoAppro.logger.getLoggerPanel(isNewProduct,
 				defaultBarID, productID.toString());
-		if (loggerPanel != null)
-			center.add(loggerPanel);
+		center.add(loggerPanel);
 		dialog.add(center, BorderLayout.PAGE_START);
 		JPanel validationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		JButton cancel = new JButton(lang("common_cancel"));
@@ -675,7 +674,7 @@ public class MainWindow
 					return;
 				}
 				double multValue = Double.parseDouble(productMult.getText());
-				int id = (loggerPanel == null ? AutoAppro.logger.getID() : loggerPanel.getBarID());
+				int id = loggerPanel.getBarID();
 				if (isNewProduct)
 				{
 					Product toAdd = new Product();

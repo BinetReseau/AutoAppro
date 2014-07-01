@@ -49,8 +49,7 @@ public abstract class Logger
 	 * @param defaultID The default ID (the old one if the product is not new,
 	 *   The last free one after an existing ID else).
 	 * @param providerName The name of the product as the provider sees it.
-	 * @return A new {@link LoggerPanel} object, or <code>null</code>
-	 *   if there is no need to ask the user (see {@link #getID()}).
+	 * @return A new {@link LoggerPanel} object.
 	 */
 	public LoggerPanel getLoggerPanel(boolean isNew, int defaultID, String providerName)
 	{
@@ -72,19 +71,6 @@ public abstract class Logger
 		defaultPanel.add(new JLabel(AutoAppro.messages.getString("product_type")));
 		defaultPanel.add(productBarID);
 		return defaultPanel;
-	}
-
-	/** The ID for the last product asked.
-	 * <p>
-	 * In case {@link #getLoggerPanel(int)} returns <code>null</code>,
-	 * this function is then used to retrieve the bar ID for the corresponding
-	 * product.
-	 *
-	 * @return The bar ID for the product.
-	 */
-	public int getID()
-	{
-		return 0;
 	}
 
 	@Override

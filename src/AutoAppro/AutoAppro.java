@@ -33,7 +33,7 @@ public class AutoAppro
 	
 	/* List of all the available providers and loggers */
 	public static final Provider[] providers = {new Intermarche()};
-	public static final Logger[] loggers = {new Bar2Manual()};
+	public static final Logger[] loggers = {new Bar2Manual(), new Bar2Auto()};
 
 	private static MySplash splash;
 

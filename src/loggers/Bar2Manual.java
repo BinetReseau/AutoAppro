@@ -37,7 +37,7 @@ public class Bar2Manual extends Logger
 			result.append(", " + myDblToString(item.quantity));
 			int price = (int) item.price;
 			result.append(", '" + (price / 100));
-			result.append("." + (price % 100));
+			result.append((price < 10 ? ".0" : ".") + (price % 100));
 			result.append(");\n");
 		}
 		return result.toString();

@@ -1,3 +1,5 @@
+package AutoAppro;
+
 import java.io.Serializable;
 
 /** The possible product types. */

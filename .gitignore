@@ -19,5 +19,8 @@ hs_err_pid*
 !/bin/MessagesBundle*
 !/bin/*.png
 !/bin/*.txt
+!/bin/AutoAppro
+!/bin/AutoAppro/*.png
+!/bin/AutoAppro/*.txt
 !/bin/loggers
 !/bin/loggers/bar1_preambule.js

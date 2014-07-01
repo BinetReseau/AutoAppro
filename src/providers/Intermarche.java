@@ -11,6 +11,7 @@ import models.*;
 public class Intermarche extends Provider
 {
 	private static final int INITIAL_HASHMAP_SIZE = 4096;
+	@SuppressWarnings("unused")
 	private static final int SIMILARITY_ERR_ACCEPT = 3;
 	private static final Pattern pricePattern, qttPattern;
 
@@ -163,6 +164,7 @@ public class Intermarche extends Provider
 		} catch (IOException e) { }
 	}
 
+	@SuppressWarnings("unused")
 	private static boolean levenshteinOK(String a, String b, int aOffset, int bOffset, int max)
 	{
 		if (aOffset < 0) return (bOffset <= max);

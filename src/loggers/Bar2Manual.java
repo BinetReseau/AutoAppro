@@ -12,7 +12,7 @@ import models.*;
  * fills the corresponding fields so that the user only needs to valid
  * the delivery.
  */
-public class Bar2 extends Logger
+public class Bar2Manual extends Logger
 {
 	private static final String PREAMBULE_FILENAME = "bar1_preambule.js";
 
@@ -55,6 +55,6 @@ public class Bar2 extends Logger
 	@Override
 	public String getName()
 	{
-		return "Site bars 2.0 beta";
+		return "Site bars 2.0 beta - Manuel";
 	}
 }

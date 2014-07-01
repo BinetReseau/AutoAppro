@@ -33,7 +33,7 @@ public class AutoAppro
 	
 	/* List of all the available providers and loggers */
 	public static final Provider[] providers = {new Intermarche()};
-	public static final Logger[] loggers = {new Bar2()};
+	public static final Logger[] loggers = {new Bar2Manual()};
 
 	private static MySplash splash;
 
@@ -191,6 +191,10 @@ public class AutoAppro
 			splash.setStatus(messages.getString("err_updates"), 0.15);
 			try { Thread.sleep(2000); } catch (InterruptedException e) { }
 		}
+		/* Initializing the provider */
+		provider.initialize();
+		/* Initializing the logger */
+		logger.initialize();
 		/* Getting the products associated with the current provider */
 		splash.setStatus(messages.getString("load_products"), 0.95);
 		getProducts();

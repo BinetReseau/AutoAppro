@@ -79,6 +79,17 @@ public abstract class Provider
 	 */
 	public abstract String getName();
 
+	/** Initialize the provider.
+	 * <p>
+	 * Actually, some initializing part might be in the constructor,
+	 * but the constructor may be called even if this provider is not used.
+	 * Therefore, this function is called once the provider chosen,
+	 * and only for this one.
+	 */
+	public void initialize()
+	{
+	}
+
 	@Override
 	public String toString()
 	{

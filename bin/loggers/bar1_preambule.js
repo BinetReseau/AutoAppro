@@ -1,8 +1,9 @@
 function addInterProduct(id, qtt, price)
 {
 	var objPrice = document.getElementsByName("provimoney_" + id),
-		objQtt = document.getElementsByName("proviqty_" + id);
-	if ((objPrice.length != 1) || (objQtt.length != 1))
+		objQtt = document.getElementsByName("proviqty_" + id),
+		objQttBox = document.getElementsByName("proviqtybox_" + id);
+	if ((objPrice.length != 1) || (objQtt.length != 1) || (objQttBox.length != 1))
 		throw new Error('Problem with id ' + id);
 	if (objPrice[0].value == "")
 	{
@@ -16,4 +17,5 @@ function addInterProduct(id, qtt, price)
 			objQtt[0].value = parseFloat(objQtt[0].value) + parseFloat(price);
 		else objQtt[0].value = parseFloat(objQtt[0].value) + parseFloat(qtt);
 	}
+	objQttBox[0].value = 1;
 }

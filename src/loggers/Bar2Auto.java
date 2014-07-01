@@ -139,7 +139,7 @@ public class Bar2Auto extends Logger
 				while (Character.isDigit(line.charAt(index2)))
 					++index2;
 				item.id = Integer.parseInt(line.substring(index, index2));
-				while (!in.readLine().startsWith("<option value="));
+				while (!in.readLine().startsWith("<option value=\"1\""));
 				item.defaultQtt = in.readLine();
 				while ((index = (line = in.readLine()).indexOf("style=\"font-weight:bold;\">"))== -1);
 				index += 26;

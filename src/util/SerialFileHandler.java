@@ -3,7 +3,8 @@ package util;
 import java.io.*;
 
 /** A static-usage class for writing and reading objects into files. */
-public class SerialFileHandler {
+public class SerialFileHandler
+{
 	/** Write an object into a file.
 	 *
 	 * @param object The object to write.

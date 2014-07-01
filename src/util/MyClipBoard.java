@@ -4,7 +4,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.*;
 
 /** A simple class to handle text writing and reading in clip-board. */
-public class MyClipBoard {
+public class MyClipBoard
+{
 	/** Get the clip-board text.
 	 *
 	 * @return The clip-board text, or <code>null</code> if there is none.

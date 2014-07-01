@@ -1,7 +1,8 @@
 package util;
 
 /** Class used to check whether two strings are similar or not. */
-public class SimilarityChecker {
+public class SimilarityChecker
+{
 	/** Check whether two strings are similar or not.
 	 *
 	 * @param a The first string to compare.

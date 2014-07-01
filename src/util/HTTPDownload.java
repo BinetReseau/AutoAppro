@@ -5,7 +5,8 @@ import java.net.URL;
 import java.util.concurrent.*;
 
 /** An easy download tool. */
-public class HTTPDownload {
+public class HTTPDownload
+{
 	private static final int BUFFER_SIZE = 256;
 
 	/** Read the first line of a file through HTTP.

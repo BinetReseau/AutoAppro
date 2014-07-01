@@ -4,7 +4,8 @@ import javax.swing.JPanel;
 
 /** The panel to display when choosing the bar product. */
 @SuppressWarnings("serial")
-public abstract class LoggerPanel extends JPanel {
+public abstract class LoggerPanel extends JPanel
+{
 	/** When the user validates the form, this should return the correct value.
 	 *
 	 * @return The bar ID for the product.

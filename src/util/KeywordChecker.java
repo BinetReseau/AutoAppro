@@ -3,7 +3,8 @@ package util;
 import java.text.Normalizer;
 
 /** Class used to check many strings for keywords. */
-public class KeywordChecker {
+public class KeywordChecker
+{
 	private String[] keywords;
 
 	/** Construct the checker with the giver keywords.

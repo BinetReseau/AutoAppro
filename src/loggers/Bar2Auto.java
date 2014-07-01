@@ -3,7 +3,8 @@ package loggers;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.JOptionPane;
@@ -19,20 +20,58 @@ import models.*;
 public class Bar2Auto extends Logger
 {
 	private String bar, login, password;
-	private LinkedList<BarItem> items;
+	private HashMap<Integer, BarItem> items;
 
 	private static class BarItem
 	{
 		String name;
-		int id;
 		String defaultQtt;
+		double price, quantity;
 	}
 
 	@Override
 	public String log(Iterable<LogItem> items) throws Exception
 	{
-		// TODO=
+		for (BarItem item : this.items.values())
+			item.price = item.quantity = 0;
+		for (LogItem item : items)
+		{
+			BarItem currentItem = this.items.get(item.barID);
+			if (currentItem == null)
+				throw new Exception("Item not found (ID=" + item.barID + ").");
+			currentItem.price += item.price;
+			currentItem.quantity += item.quantity;
+		}
+		URL url = new URL("http://bar/" + this.bar + "/new-provision/do");
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("POST");
+		con.setDoOutput(true);
+		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+		wr.writeBytes("login=" + this.login + "&p455w0rd=" + this.password + "&provimoney_0=");
+		for (Entry<Integer, BarItem> entry : this.items.entrySet())
+		{
+			int price = (int) entry.getValue().price;
+			wr.writeBytes("&provimoney_" + entry.getKey() + "=" +
+					(price / 100) + (price < 10 ? ".0" : ".") + (price % 100));
+			wr.writeBytes("&proviqty_" + entry.getKey() + "=" + myDblToString(entry.getValue().quantity));
+			wr.writeBytes("&proviqtybox_" + entry.getKey() + "=1");
+		}
+		wr.writeBytes("&btn_provision=Valide ton appro !");
+		wr.flush();
+		wr.close();
+		int responseCode = con.getResponseCode();
+		if (responseCode != 200)
+			System.out.println("Response: " + responseCode);
 		return null;
+	}
+
+	private static String myDblToString(double value)
+	{
+		int approx = (int) value;
+		double remaining = value - approx;
+		if (remaining < 0.0001) return Integer.toString(approx);
+		if (remaining > 0.9999) return Integer.toString(approx + 1);
+		return Double.toString(value);
 	}
 
 	@Override
@@ -91,7 +130,7 @@ public class Bar2Auto extends Logger
 			}
 		}
 		this.password = (String) password;
-		items = new LinkedList<BarItem>();
+		items = new HashMap<Integer, BarItem>(2048);
 		BufferedReader in = null;
 		try {
 			URL url = new URL("http://bar/" + this.bar + "/new-provision");
@@ -138,13 +177,13 @@ public class Bar2Auto extends Logger
 				int index2 = (index += 11);
 				while (Character.isDigit(line.charAt(index2)))
 					++index2;
-				item.id = Integer.parseInt(line.substring(index, index2));
+				int id = Integer.parseInt(line.substring(index, index2));
 				while (!in.readLine().startsWith("<option value=\"1\""));
 				item.defaultQtt = in.readLine();
 				while ((index = (line = in.readLine()).indexOf("style=\"font-weight:bold;\">"))== -1);
 				index += 26;
 				item.name = line.substring(index, line.length() - 5);
-				items.add(item);
+				items.put(id, item);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

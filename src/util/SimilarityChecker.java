@@ -1,5 +1,7 @@
 package util;
 
+import java.text.Normalizer;
+
 /** Class used to check whether two strings are similar or not. */
 public class SimilarityChecker
 {
@@ -12,8 +14,8 @@ public class SimilarityChecker
 	 */
 	public static boolean isSimilar(String a, String b, int similarityAcceptError)
 	{
-		a = a.toUpperCase();
-		b = b.toUpperCase();
+		a = Normalizer.normalize(a, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+		b = Normalizer.normalize(b, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
 		if (a.equals(b)) return true;
 		return levenshteinOK(a, b, a.length() - 1, b.length() - 1, similarityAcceptError);
 	}
@@ -46,8 +48,8 @@ public class SimilarityChecker
 	 */
 	public static boolean isSimilarDel(String a, String b, int similarityAcceptError)
 	{
-		a = a.toUpperCase();
-		b = b.toUpperCase();
+		a = Normalizer.normalize(a, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+		b = Normalizer.normalize(b, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
 		if (a.equals(b)) return true;
 		return levenshteinDelOK(a, b, a.length() - 1, b.length() - 1, similarityAcceptError,
 				Math.min(0, a.length() - b.length()), Math.min(0, b.length() - a.length()));

@@ -30,6 +30,7 @@ public class KeywordChecker
 	 */
 	public boolean check(String str)
 	{
+		str = Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 		for (String keyword : keywords)
 		{
 			if (!str.contains(keyword))

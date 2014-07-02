@@ -51,7 +51,7 @@ public abstract class Logger
 	 * @param providerName The name of the product as the provider sees it.
 	 * @return A new {@link LoggerPanel} object.
 	 */
-	public LoggerPanel getLoggerPanel(boolean isNew, int defaultID, String providerName)
+	public LoggerPanel getLoggerPanel(int defaultID, String providerName)
 	{
 		final JSpinner productBarID = new JSpinner(new SpinnerNumberModel(defaultID, 1, 999999, 1));
 		@SuppressWarnings("serial")

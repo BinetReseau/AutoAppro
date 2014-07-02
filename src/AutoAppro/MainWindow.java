@@ -642,8 +642,10 @@ public class MainWindow
 		} else {
 			defaultBarID = currentProduct.barID;
 		}
-		final LoggerPanel loggerPanel = AutoAppro.logger.getLoggerPanel(isNewProduct,
+		final LoggerPanel loggerPanel = AutoAppro.logger.getLoggerPanel(
 				defaultBarID, productID.toString());
+		if (!isNewProduct)
+			loggerPanel.setBarID(defaultBarID);
 		center.add(loggerPanel);
 		dialog.add(center, BorderLayout.PAGE_START);
 		JPanel validationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));

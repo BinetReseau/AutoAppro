@@ -1,5 +1,6 @@
 package loggers;
 
+import java.awt.BorderLayout;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import AutoAppro.AutoAppro;
-import util.MyPreferences;
+import util.*;
 import models.*;
 
 /** A logger for the currently running version of the bar software.
@@ -29,6 +30,22 @@ public class Bar2Auto extends Logger
 		String name;
 		String defaultQtt;
 		double price, quantity;
+		KeywordChecker checker;
+	}
+
+	private static class ChoiceItem implements Comparable<ChoiceItem>
+	{
+		BarItem item;
+		int id;
+		int cmpValue;
+
+		@Override
+		public int compareTo(ChoiceItem other)
+		{
+			if ((cmpValue == 0) && (other.cmpValue == 0))
+				return item.name.compareTo(other.item.name);
+			return other.cmpValue - cmpValue;
+		}
 	}
 
 	@Override
@@ -85,6 +102,7 @@ public class Bar2Auto extends Logger
 	@Override
 	public void initialize()
 	{
+		/* Get the bar name */
 		Serializable bar = MyPreferences.get(this.getName() + ".bar");
 		if (bar == null)
 		{
@@ -98,6 +116,7 @@ public class Bar2Auto extends Logger
 			MyPreferences.set(this.getName() + ".bar", bar);
 		}
 		this.bar = (String) bar;
+		/* Get the login */
 		Serializable login = MyPreferences.get(this.getName() + ".login");
 		if (login == null)
 		{
@@ -110,6 +129,7 @@ public class Bar2Auto extends Logger
 			}
 		}
 		this.login = (String) login;
+		/* Get the password */
 		Serializable password = MyPreferences.get(this.getName() + ".password");
 		if (password == null)
 		{
@@ -132,6 +152,7 @@ public class Bar2Auto extends Logger
 			}
 		}
 		this.password = (String) password;
+		/* Get the list of items */
 		items = new HashMap<Integer, BarItem>(2048);
 		BufferedReader in = null;
 		try {
@@ -198,12 +219,71 @@ public class Bar2Auto extends Logger
 				} catch (IOException e) { }
 			}
 		}
+		/* Get the keywords for each item */
+		in = null;
+		try {
+			URL url = new URL("http://bar/" + this.bar + "/aliments");
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			con.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.flush();
+			wr.close();
+			int responseCode = con.getResponseCode();
+			if (responseCode != 200)
+				throw new Exception("Response code: " + responseCode);
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String line;
+			while (!in.readLine().equals("<th>Mots cl&eacute;s</th>"));
+			while (!(line = in.readLine()).equals("</table>"))
+			{
+				if (!line.startsWith("<tr"))
+					continue;
+				for (int nbCol = 0; nbCol < 5; ++nbCol)
+					while (!in.readLine().startsWith("<td"));
+				line = in.readLine();
+				int index = line.indexOf("aliments/");
+				if (index == -1)
+					throw new Exception("\"aliments/\" not found in keywords link");
+				index = Integer.parseInt(line.substring(index + 9, line.length() - 2));
+				KeywordChecker currentChecker = new KeywordChecker(in.readLine().split("\\s+"));
+				items.get(index).checker = currentChecker;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		} finally {
+			if (in != null)
+			{
+				try {
+					in.close();
+				} catch (IOException e) { }
+			}
+		}
 	}
 
 	@Override
-	public LoggerPanel getLoggerPanel(boolean isNew, int defaultID, String providerName)
+	public LoggerPanel getLoggerPanel(int defaultID, String providerName)
 	{
-		// TODO
-		return null;
+		JComboBox<ChoiceItem> combo = new JComboBox<ChoiceItem>();
+		// TODO fill combo
+		@SuppressWarnings("serial")
+		LoggerPanel loggerPanel = new LoggerPanel() {
+			@Override
+			public void setBarID(int id)
+			{
+				// TODO
+			}
+			@Override
+			public int getBarID()
+			{
+				// TODO
+				return 0;
+			}
+		};
+		loggerPanel.setLayout(new BorderLayout(5, 0));
+		loggerPanel.add(new JLabel(AutoAppro.messages.getString("bar2auto_type")), BorderLayout.LINE_START);
+		loggerPanel.add(combo, BorderLayout.CENTER);
+		return loggerPanel;
 	}
 }

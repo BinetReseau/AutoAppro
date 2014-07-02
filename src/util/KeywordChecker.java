@@ -18,7 +18,7 @@ public class KeywordChecker
 		{
 			/* We remove the accents */
 			this.keywords[i] = Normalizer.normalize(keywords[i], Normalizer.Form.NFD)
-					.replaceAll("[^\\p{ASCII}]", "");
+					.replaceAll("[^\\p{ASCII}]", "").toUpperCase();
 		}
 	}
 
@@ -30,12 +30,29 @@ public class KeywordChecker
 	 */
 	public boolean check(String str)
 	{
-		str = Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+		str = Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
 		for (String keyword : keywords)
 		{
 			if (!str.contains(keyword))
 				return false;
 		}
 		return true;
+	}
+
+	/** Count the number of keywords found in a string.
+	 *
+	 * @param str The string value to analyze.
+	 * @return The number of keywords found in the string value.
+	 */
+	public int count(String str)
+	{
+		int result = 0;
+		str = Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+		for (String keyword : keywords)
+		{
+			if (str.contains(keyword))
+				++result;
+		}
+		return result;
 	}
 }

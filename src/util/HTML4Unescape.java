@@ -39,12 +39,21 @@ public class HTML4Unescape
 			int index2 = str.indexOf(';', index + 1);
 			if (index2 == -1)
 				return str;
-			if ((str.charAt(index + 1) == '#') && (((str.charAt(index + 2) == 'x') && (index2 == index + 7)) ||
-					((str.charAt(index + 2) == '0') && (index2 == index + 5))))
+			if (str.charAt(index + 1) == '#')
 			{
 				int result = 0;
-				for (int i = index + 3; i < index2; ++i)
-					result = (result << 4) | hexValue(str.charAt(i));
+				try {
+					if ((str.charAt(index + 2) == 'x') || (str.charAt(index + 2) == '0'))
+					{
+						for (int i = index + 3; i < index2; ++i)
+							result = (result << 4) | hexValue(str.charAt(i));
+					} else {
+						result = Integer.parseInt(str.substring(index + 2, index2));
+					}
+				} catch (NumberFormatException e) {
+					index = index2;
+					continue;
+				}
 				str = str.substring(0, index) + Character.toString((char) result) + str.substring(index2 + 1);
 				++index;
 			} else if ((cCode = knownEscapes.get(str.substring(index + 1, index2))) != null)
@@ -64,7 +73,7 @@ public class HTML4Unescape
 			return (int) (c - '0');
 		if ((c >= 'A') && (c <= 'F'))
 			return ((int) (c - 'A')) + 0x0A;
-		return 0;
+		throw new NumberFormatException();
 	}
 
 	static {
@@ -136,5 +145,8 @@ public class HTML4Unescape
 		knownEscapes.put("yacute", 253);
 		knownEscapes.put("yuml", 255);
 		knownEscapes.put("cent", 162);
+		knownEscapes.put("OElig", 0x0152);
+		knownEscapes.put("oelig", 0x0153);
+		knownEscapes.put("euro", 0x20AC);
 	}
 }

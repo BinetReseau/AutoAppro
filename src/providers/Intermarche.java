@@ -6,12 +6,12 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.regex.*;
 
+import util.SimilarityChecker;
 import models.*;
 
 public class Intermarche extends Provider
 {
 	private static final int INITIAL_HASHMAP_SIZE = 4096;
-	@SuppressWarnings("unused")
 	private static final int SIMILARITY_ERR_ACCEPT = 3;
 	private static final Pattern pricePattern, qttPattern;
 
@@ -140,6 +140,17 @@ public class Intermarche extends Provider
 					}
 				}
 				if (list == null)
+				{
+					for (Map.Entry<String, LinkedList<ProviderProduct>> entry : products.entrySet())
+					{
+						if (SimilarityChecker.isSimilar(entry.getKey(), simKey, SIMILARITY_ERR_ACCEPT))
+						{
+							list = entry.getValue();
+							break;
+						}
+					}
+				}
+				if (list == null)
 					throw new IllegalArgumentException("Unknown product : " + simKey);
 				/* First, we also try to find the same quantity, else we take the first element */
 				ProviderProduct myItem = list.getFirst();
@@ -164,29 +175,11 @@ public class Intermarche extends Provider
 		} catch (IOException e) { }
 	}
 
-	@SuppressWarnings("unused")
-	private static boolean levenshteinOK(String a, String b, int aOffset, int bOffset, int max)
-	{
-		if (aOffset < 0) return (bOffset <= max);
-		if (bOffset < 0) return (aOffset <= max);
-		if (a.charAt(aOffset) == b.charAt(bOffset))
-			return levenshteinOK(a, b, aOffset - 1, bOffset - 1, max);
-		if (max == 0) return false;
-		if (levenshteinOK(a, b, aOffset - 1, bOffset, max - 1))
-			return true;
-		if (levenshteinOK(a, b, aOffset, bOffset - 1, max - 1))
-			return true;
-		if (levenshteinOK(a, b, aOffset - 1, bOffset - 1, max - 1))
-			return true;
-		return false;
-	}
-
 	private static boolean isSimilar(String a, String b)
 	{
 		a = a.toUpperCase();
 		b = b.toUpperCase();
 		if (a.equals(b)) return true;
-		//return levenshteinOK(a, b, a.length() - 1, b.length() - 1, SIMILARITY_ERR_ACCEPT);
 		return false;
 	}
 

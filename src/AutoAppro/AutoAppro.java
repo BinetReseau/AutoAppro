@@ -184,7 +184,7 @@ public class AutoAppro
 					return;
 				} catch (Exception e) {
 					splash.setStatus(messages.getString("err_updates"), 0.4);
-					try { Thread.sleep(2000); } catch (InterruptedException e2) { }
+					try { Thread.sleep(1000); } catch (InterruptedException e2) { }
 				}
 			}
 		} else {
@@ -192,8 +192,10 @@ public class AutoAppro
 			try { Thread.sleep(2000); } catch (InterruptedException e) { }
 		}
 		/* Initializing the provider */
+		splash.setStatus(messages.getString("load_init_provider"), 0.45);
 		provider.initialize();
 		/* Initializing the logger */
+		splash.setStatus(messages.getString("load_init_logger"), 0.70);
 		logger.initialize();
 		/* Getting the products associated with the current provider */
 		splash.setStatus(messages.getString("load_products"), 0.95);

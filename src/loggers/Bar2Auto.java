@@ -328,4 +328,27 @@ public class Bar2Auto extends Logger
 		loggerPanel.add(infoPanel);
 		return loggerPanel;
 	}
+
+	@Override
+	public void askSettings(JFrame parent)
+	{
+		String bar = JOptionPane.showInputDialog(null, AutoAppro.messages.getString("bar2auto_bar_title"),
+				AutoAppro.messages.getString("bar2auto_bar_content"), JOptionPane.QUESTION_MESSAGE);
+		if (bar == null)
+			return;
+		this.bar = bar;
+		MyPreferences.set(this.getName() + ".bar", bar);
+		String login = JOptionPane.showInputDialog(null, AutoAppro.messages.getString("bar2auto_login_title"),
+				AutoAppro.messages.getString("bar2auto_login_content"), JOptionPane.QUESTION_MESSAGE);
+		if (login == null)
+			return;
+		this.login = login;
+		MyPreferences.set(this.getName() + ".login", login);
+		String password = JOptionPane.showInputDialog(null, AutoAppro.messages.getString("bar2auto_passwd_title"),
+				AutoAppro.messages.getString("bar2auto_passwd_content"), JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		this.password = password;
+		MyPreferences.set(this.getName() + ".password", password);
+	}
 }

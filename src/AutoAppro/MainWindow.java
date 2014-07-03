@@ -615,15 +615,19 @@ public class MainWindow
 					dialog.dispose();
 			}
 		});
-		dialog.setBounds(100, 100, 500, 300);
+		dialog.setBounds(100, 100, 700, 300);
 		JPanel center = new JPanel();
 		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-		center.add(new JLabel(lang("product_name") + " " + productID.toString()));
+		JPanel productNamePanel = new JPanel(new BorderLayout());
+		productNamePanel.add(new JLabel(lang("product_name") + " " + productID.toString()), BorderLayout.CENTER);
+		center.add(productNamePanel);
 		JPanel fields = new JPanel(new GridLayout(0, 2, 0, 5));
 		fields.add(new JLabel(lang("product_type")));
 		final JComboBox<ProductType> productType = new JComboBox<ProductType>(ProductType.values());
 		if (!isNewProduct)
 			productType.setSelectedItem(currentProduct.type);
+		else
+			productType.setSelectedItem(ProductType.NORMAL);
 		fields.add(productType);
 		fields.add(new JLabel(lang("product_mult")));
 		double defaultMult = isNewProduct ? 1 : currentProduct.mult;
@@ -648,6 +652,34 @@ public class MainWindow
 			loggerPanel.setBarID(defaultBarID);
 		center.add(loggerPanel);
 		dialog.add(center, BorderLayout.PAGE_START);
+		JPanel endingPanel = new JPanel();
+		endingPanel.setLayout(new BoxLayout(endingPanel, BoxLayout.Y_AXIS));
+		JPanel getFromPanel = new JPanel(new BorderLayout(5, 0));
+		getFromPanel.add(new JLabel(lang("product_from")), BorderLayout.LINE_START);
+		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());
+		Collections.sort(data);
+		final JComboBox<Product> loadFromList = new JComboBox<Product>(data);
+		getFromPanel.add(loadFromList, BorderLayout.CENTER);
+		JButton loadFrom = new JButton(lang("product_load"));
+		loadFrom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Object fromObj = loadFromList.getSelectedItem();
+				if (fromObj == null)
+				{
+					JOptionPane.showMessageDialog(dialog, lang("window_products_nosel"),
+							lang("common_error"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				Product selProduct = (Product) fromObj;
+				productType.setSelectedItem(selProduct.type);
+				productMult.setText(Double.toString(selProduct.mult));
+				loggerPanel.setBarID(selProduct.barID);
+			}
+		});
+		getFromPanel.add(loadFrom, BorderLayout.LINE_END);
+		endingPanel.add(getFromPanel);
 		JPanel validationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		JButton cancel = new JButton(lang("common_cancel"));
 		cancel.addActionListener(new ActionListener() {
@@ -700,7 +732,8 @@ public class MainWindow
 			}
 		});
 		validationPanel.add(validate);
-		dialog.add(validationPanel, BorderLayout.PAGE_END);
+		endingPanel.add(validationPanel);
+		dialog.add(endingPanel, BorderLayout.PAGE_END);
 		dialog.setVisible(true);
 	}
 

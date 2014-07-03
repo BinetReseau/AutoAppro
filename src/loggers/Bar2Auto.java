@@ -1,11 +1,15 @@
 package loggers;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.*;
@@ -45,6 +49,12 @@ public class Bar2Auto extends Logger
 			if ((cmpValue == 0) && (other.cmpValue == 0))
 				return item.name.compareTo(other.item.name);
 			return other.cmpValue - cmpValue;
+		}
+
+		@Override
+		public String toString()
+		{
+			return item.name;
 		}
 	}
 
@@ -265,25 +275,57 @@ public class Bar2Auto extends Logger
 	@Override
 	public LoggerPanel getLoggerPanel(int defaultID, String providerName)
 	{
-		JComboBox<ChoiceItem> combo = new JComboBox<ChoiceItem>();
-		// TODO fill combo
+		final Vector<ChoiceItem> data = new Vector<ChoiceItem>(items.size());
+		for (Entry<Integer, BarItem> item : items.entrySet())
+		{
+			ChoiceItem toAdd = new ChoiceItem();
+			toAdd.id = item.getKey();
+			toAdd.item = item.getValue();
+			toAdd.cmpValue = item.getValue().checker.count(providerName);
+			data.add(toAdd);
+		}
+		Collections.sort(data);
+		final JLabel infoLabel = new JLabel(data.get(0).item.defaultQtt);
+		final JComboBox<ChoiceItem> combo = new JComboBox<ChoiceItem>(data);
+		combo.setSelectedIndex(0);
+		combo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				infoLabel.setText(((ChoiceItem) combo.getSelectedItem()).item.defaultQtt);
+			}
+		});
 		@SuppressWarnings("serial")
 		LoggerPanel loggerPanel = new LoggerPanel() {
 			@Override
 			public void setBarID(int id)
 			{
-				// TODO
+				for (ChoiceItem item : data)
+				{
+					if (item.id == id)
+					{
+						combo.setSelectedItem(item);
+						infoLabel.setText(item.item.defaultQtt);
+						return;
+					}
+				}
+				System.err.println("Corrupt data (Bar2Auto.getLoggerPanel -> setBarID)");
 			}
 			@Override
 			public int getBarID()
 			{
-				// TODO
-				return 0;
+				return ((ChoiceItem) combo.getSelectedItem()).id;
 			}
 		};
-		loggerPanel.setLayout(new BorderLayout(5, 0));
-		loggerPanel.add(new JLabel(AutoAppro.messages.getString("bar2auto_type")), BorderLayout.LINE_START);
-		loggerPanel.add(combo, BorderLayout.CENTER);
+		loggerPanel.setLayout(new BoxLayout(loggerPanel, BoxLayout.Y_AXIS));
+		JPanel comboPanel = new JPanel(new BorderLayout(5, 0));
+		comboPanel.add(new JLabel(AutoAppro.messages.getString("bar2auto_type")), BorderLayout.LINE_START);
+		comboPanel.add(combo, BorderLayout.CENTER);
+		loggerPanel.add(comboPanel);
+		JPanel infoPanel = new JPanel(new BorderLayout(5,  0));
+		infoPanel.add(new JLabel(AutoAppro.messages.getString("bar2auto_info")), BorderLayout.LINE_START);
+		infoPanel.add(infoLabel, BorderLayout.CENTER);
+		loggerPanel.add(infoPanel);
 		return loggerPanel;
 	}
 }

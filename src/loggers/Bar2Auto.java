@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.*;
 
@@ -347,6 +348,17 @@ public class Bar2Auto extends Logger
 		if (password == null)
 			return;
 		this.password = password;
-		MyPreferences.set(this.getName() + ".password", password);
+		ByteArrayOutputStream encoded = new ByteArrayOutputStream();
+		try
+		{
+			OutputStream out = new GZIPOutputStream(encoded);
+			out.write((password + "\n\n").getBytes());
+			out.flush();
+			out.close();
+			MyPreferences.set(this.getName() + ".password", encoded.toByteArray());
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

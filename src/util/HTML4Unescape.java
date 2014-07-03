@@ -43,7 +43,7 @@ public class HTML4Unescape
 			{
 				int result = 0;
 				try {
-					if ((str.charAt(index + 2) == 'x') || (str.charAt(index + 2) == '0'))
+					if (str.charAt(index + 2) == 'x')
 					{
 						for (int i = index + 3; i < index2; ++i)
 							result = (result << 4) | hexValue(str.charAt(i));

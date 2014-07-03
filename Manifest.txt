@@ -1,2 +1,2 @@
-Main-Class: AutoAppro
+Main-Class: AutoAppro.AutoAppro
 SplashScreen-Image: splash.png

@@ -21,11 +21,11 @@ endif
 
 all: AutoAppro.jar
 
-AutoAppro.jar: bin/AutoAppro.class
+AutoAppro.jar: bin/AutoAppro/AutoAppro.class
 	$(JAR) c$(VERBOSE1)fm AutoAppro.jar Manifest.txt -C bin/ .
 
-bin/AutoAppro.class: src/AutoAppro.java
-	$(JAVAC) $(VERBOSE2) -sourcepath src -classpath bin src/AutoAppro.java -d bin
+bin/AutoAppro/AutoAppro.class: src/AutoAppro/AutoAppro.java
+	$(JAVAC) $(VERBOSE2) -sourcepath src -classpath bin src/AutoAppro/AutoAppro.java -d bin
 
 clean:
-	rm -r$(VERBOSE1)f AutoAppro.jar bin/*.class bin/loggers/*.class bin/models bin/providers/*.class bin/util
+	rm -r$(VERBOSE1)f AutoAppro.jar bin/AutoAppro/*.class bin/loggers/*.class bin/models bin/providers/*.class bin/util

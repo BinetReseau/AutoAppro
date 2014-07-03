@@ -211,10 +211,10 @@ public class Bar2Auto extends Logger
 					++index2;
 				int id = Integer.parseInt(line.substring(index, index2));
 				while (!in.readLine().startsWith("<option value=\"1\""));
-				item.defaultQtt = HTML4Escape.unescapeHTML4(in.readLine());
+				item.defaultQtt = HTML4Unescape.unescapeHTML4(in.readLine());
 				while ((index = (line = in.readLine()).indexOf("style=\"font-weight:bold;\">"))== -1);
 				index += 26;
-				item.name = HTML4Escape.unescapeHTML4(line.substring(index, line.length() - 5));
+				item.name = HTML4Unescape.unescapeHTML4(line.substring(index, line.length() - 5));
 				items.put(id, item);
 			}
 		} catch (Exception e) {

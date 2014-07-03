@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /** HTML4 characters escaper. */
-public class HTML4Escape
+public class HTML4Unescape
 {
 	private static final HashMap<String, Integer> knownEscapes = new HashMap<String, Integer>(1024);
 
@@ -39,7 +39,8 @@ public class HTML4Escape
 			int index2 = str.indexOf(';', index + 1);
 			if (index2 == -1)
 				return str;
-			if ((str.charAt(index + 1) == '#') && (str.charAt(index + 2) == 'x') && (index2 == index + 7))
+			if ((str.charAt(index + 1) == '#') && (((str.charAt(index + 2) == 'x') && (index2 == index + 7)) ||
+					((str.charAt(index + 2) == '0') && (index2 == index + 5))))
 			{
 				int result = 0;
 				for (int i = index + 3; i < index2; ++i)

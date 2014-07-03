@@ -2,7 +2,9 @@ package models;
 
 import java.awt.GridLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -77,5 +79,12 @@ public abstract class Logger
 	public String toString()
 	{
 		return this.getName();
+	}
+
+	/** Ask the user for any specific settings for this logger (GUI thread). */
+	public void askSettings(JFrame parent)
+	{
+		JOptionPane.showMessageDialog(parent, AutoAppro.messages.getString("log_no_opt"),
+				AutoAppro.messages.getString("common_info"), JOptionPane.INFORMATION_MESSAGE);
 	}
 }

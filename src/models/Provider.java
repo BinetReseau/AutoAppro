@@ -2,6 +2,11 @@ package models;
 
 import java.io.Serializable;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import AutoAppro.AutoAppro;
+
 /** The abstract class every provider must implement.
  * <p>
  * The main principle is the following :
@@ -94,5 +99,12 @@ public abstract class Provider
 	public String toString()
 	{
 		return this.getName();
+	}
+
+	/** Ask the user for any specific settings for this provider (GUI thread). */
+	public void askSettings(JFrame parent)
+	{
+		JOptionPane.showMessageDialog(parent, AutoAppro.messages.getString("provider_no_opt"),
+				AutoAppro.messages.getString("common_info"), JOptionPane.INFORMATION_MESSAGE);
 	}
 }

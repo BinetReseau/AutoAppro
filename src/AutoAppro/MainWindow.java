@@ -144,6 +144,26 @@ public class MainWindow
 				}
 			});
 			mnFile.add(mntmExit);
+			JMenu mnOptions = new JMenu(lang("window_menu_options"));
+			menuBar.add(mnOptions);
+			JMenuItem mntmLogger = new JMenuItem(lang("window_menu_opt_logger"));
+			mntmLogger.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					AutoAppro.logger.askSettings(mainWindow);
+				}
+			});
+			mnOptions.add(mntmLogger);
+			JMenuItem mntmProvider = new JMenuItem(lang("window_menu_opt_provider"));
+			mntmProvider.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					AutoAppro.provider.askSettings(mainWindow);
+				}
+			});
+			mnOptions.add(mntmProvider);
 			JMenu mnHelp = new JMenu(lang("window_menu_hm"));
 			menuBar.add(mnHelp);
 			JMenuItem mntmHelp = new JMenuItem(lang("window_menu_help"));

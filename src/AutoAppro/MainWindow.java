@@ -497,6 +497,9 @@ public class MainWindow
 			case ROUND_QTT:
 				result.quantity = (double) Math.round(currentProduct.mult * quantity);
 				break;
+			case QTT_PRICE:
+				result.quantity = currentProduct.mult * price;
+				break;
 			}
 			result.price = price;
 			synchronized (currentDelivery)

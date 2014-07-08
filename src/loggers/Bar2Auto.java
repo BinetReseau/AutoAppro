@@ -70,7 +70,7 @@ public class Bar2Auto extends Logger
 			currentItem.price += item.price;
 			currentItem.quantity += item.quantity;
 		}
-		URL url = new URL("http://bar/" + this.bar + "/new-provision/do");
+		URL url = new URL("http://bar.eleves.polytechnique.fr/" + this.bar + "/new-provision/do");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 		con.setDoOutput(true);
@@ -165,7 +165,7 @@ public class Bar2Auto extends Logger
 		items = new HashMap<Integer, BarItem>(2048);
 		BufferedReader in = null;
 		try {
-			URL url = new URL("http://bar/" + this.bar + "/new-provision");
+			URL url = new URL("http://bar.eleves.polytechnique.fr/" + this.bar + "/new-provision");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			String urlParameters = "login=" + this.login + "&p455w0rd=" + this.password;
@@ -231,7 +231,7 @@ public class Bar2Auto extends Logger
 		/* Get the keywords for each item */
 		in = null;
 		try {
-			URL url = new URL("http://bar/" + this.bar + "/aliments");
+			URL url = new URL("http://bar.eleves.polytechnique.fr/" + this.bar + "/aliments");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			con.setDoOutput(true);

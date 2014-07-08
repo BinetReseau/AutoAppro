@@ -436,7 +436,8 @@ public class MainWindow
 			panel_4.add(btnSearch);
 			productList = new JList<Product>();
 			productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			panel_3.add(productList, BorderLayout.CENTER);
+			JScrollPane listScrollPane = new JScrollPane(productList);
+			panel_3.add(listScrollPane, BorderLayout.CENTER);
 			updateProducts();
 			disableButtons();
 		}

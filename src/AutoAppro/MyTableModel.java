@@ -137,7 +137,7 @@ public class MyTableModel extends AbstractTableModel
 			{
 				toAdd = new LogItem();
 				toAdd.barID = AutoAppro.products.get(data[i].providerID).barID;
-				toAdd.price = data[i].price / 100.0;
+				toAdd.price = data[i].price;
 				toAdd.quantity = data[i].quantity;
 				toLog.add(toAdd);
 			}

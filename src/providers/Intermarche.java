@@ -191,6 +191,7 @@ public class Intermarche extends Provider
 			for (ProviderProduct p : list)
 				retriever.addProduct(p);
 		}
+		products.clear();
 	}
 
 	@Override

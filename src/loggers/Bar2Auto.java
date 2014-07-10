@@ -199,6 +199,15 @@ public class Bar2Auto extends Logger
 					MyPreferences.set(this.getName() + ".password", null);
 					System.exit(0);
 				}
+				if (line.contains("administrateur pour rentrer une appro"))
+				{
+					JOptionPane.showMessageDialog(null, AutoAppro.messages.getString("bar2auto_error_admin"),
+							AutoAppro.messages.getString("common_error"), JOptionPane.ERROR_MESSAGE);
+					MyPreferences.set(this.getName() + ".bar", null);
+					MyPreferences.set(this.getName() + ".login", null);
+					MyPreferences.set(this.getName() + ".password", null);
+					System.exit(0);
+				}
 			}
 			while (!(line = in.readLine()).startsWith("<td colspan=\"5\""))
 			{

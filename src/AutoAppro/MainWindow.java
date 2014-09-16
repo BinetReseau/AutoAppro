@@ -203,11 +203,13 @@ public class MainWindow
 			splitPane.setLeftComponent(panel);
 			panel.setLayout(new BorderLayout(0, 0));
 			JPanel panel_1 = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
-			flowLayout.setAlignment(FlowLayout.LEADING);
+			BorderLayout retrieveLayout = new BorderLayout(5, 5);
+			panel_1.setLayout(retrieveLayout);
 			panel_1.setBorder(new TitledBorder(null, lang("window_retriever_title"),
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_1, BorderLayout.NORTH);
+			JPanel panel_2 = new JPanel();
+			panel_1.add(panel_2, BorderLayout.PAGE_START);
 			retrieveContent = new JButton(lang("window_retriever_content"));
 			retrieveContent.addActionListener(new ActionListener() {
 				@Override
@@ -233,7 +235,7 @@ public class MainWindow
 					(new Thread(doManualRetrieval)).start();
 				}
 			});
-			panel_1.add(retrieveContent);
+			panel_2.add(retrieveContent);
 			retrieveMissing = new JButton(lang("window_retriever_missing"));
 			retrieveMissing.addActionListener(new ActionListener() {
 				@Override
@@ -259,10 +261,10 @@ public class MainWindow
 					(new Thread(doMissingRetrieval)).start();
 				}
 			});
-			panel_1.add(retrieveMissing);
+			panel_2.add(retrieveMissing);
 			retrieveStatus = new JLabel(lang("common_loading"));
-			panel_1.add(retrieveStatus);
-			JPanel panel_2 = new JPanel();
+			panel_1.add(retrieveStatus, BorderLayout.CENTER);
+			panel_2 = new JPanel();
 			panel_2.setBorder(new TitledBorder(null, lang("window_list_title"),
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.add(panel_2);

@@ -21,14 +21,14 @@ import util.*;
 /** The main class for the program. */
 public class AutoAppro
 {
-	public static final String VERSION = "test";
-	private static final String UPDATE_URL = "http://129.104.234.60/AutoAppro/";
+	public static final String VERSION = "1.0";
+	private static final String UPDATE_URL = "http://bar.eleves.polytechnique.fr/AutoAppro/";
 	private static final int HTTP_UPDATE_TIMEOUT = 2000;
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
-	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(20, 350, 600, 5);
+	private static final Rectangle SPLASH_PRGSS_AREA = new Rectangle(80, 290, 450, 5);
 	private static final Color SPLASH_PRGSS_COLOR = Color.WHITE;
-	private static final Point SPLASH_STATUS_POS = new Point(25, 360);
+	private static final Point SPLASH_STATUS_POS = new Point(85, 300);
 	private static final Color SPLASH_STATUS_COLOR = Color.WHITE;
 	
 	/* List of all the available providers and loggers */

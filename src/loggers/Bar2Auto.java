@@ -108,6 +108,20 @@ public class Bar2Auto extends Logger
 		return "Site bars 2.0 beta - Auto";
 	}
 
+	private String getPassword()
+	{
+		JPanel panel = new JPanel(new BorderLayout());
+		JLabel label = new JLabel(AutoAppro.messages.getString("bar2auto_passwd_content"));
+		JPasswordField pass = new JPasswordField();
+		panel.add(label, BorderLayout.PAGE_START);
+		panel.add(pass, BorderLayout.CENTER);
+		int valid = JOptionPane.showConfirmDialog(null, panel, AutoAppro.messages.getString("bar2auto_passwd_title"),
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (valid != JOptionPane.OK_OPTION)
+			return null;
+		return new String(pass.getPassword());
+	}
+
 	@Override
 	public void initialize()
 	{
@@ -142,8 +156,7 @@ public class Bar2Auto extends Logger
 		Serializable password = MyPreferences.get(this.getName() + ".password");
 		if (password == null)
 		{
-			password = JOptionPane.showInputDialog(null, AutoAppro.messages.getString("bar2auto_passwd_title"),
-					AutoAppro.messages.getString("bar2auto_passwd_content"), JOptionPane.QUESTION_MESSAGE);
+			password = getPassword();
 			if (password == null)
 			{
 				System.exit(0);
@@ -352,8 +365,7 @@ public class Bar2Auto extends Logger
 			return;
 		this.login = login;
 		MyPreferences.set(this.getName() + ".login", login);
-		String password = JOptionPane.showInputDialog(null, AutoAppro.messages.getString("bar2auto_passwd_title"),
-				AutoAppro.messages.getString("bar2auto_passwd_content"), JOptionPane.QUESTION_MESSAGE);
+		String password = getPassword();
 		if (password == null)
 			return;
 		this.password = password;

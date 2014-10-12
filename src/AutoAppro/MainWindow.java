@@ -528,7 +528,7 @@ public class MainWindow
 			msgStr = JOptionPane.showInputDialog(mainWindow, lang("ask_qtt_title"),
 					lang("ask_qtt_content") + " " + msgStr + "\n" + lang("ask_qtt_content2"),
 					JOptionPane.QUESTION_MESSAGE);
-			if ((msgStr != null) || (!quantityPattern.matcher(msgStr).matches()))
+			if ((msgStr != null) && (!quantityPattern.matcher(msgStr).matches()))
 			{
 				JOptionPane.showMessageDialog(mainWindow, lang("error_number_format"),
 						lang("common_error"), JOptionPane.ERROR_MESSAGE);

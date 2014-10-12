@@ -2,26 +2,26 @@ package models;
 
 import java.io.Serializable;
 
-/** An abstract class that is used for informing the new products from the provider. */
+/** An abstract class that is used for informing the new products from the supplier. */
 public abstract class Retriever
 {
-	/** Add a product from its provider ID, quantity and price.
+	/** Add a product from its supplier ID, quantity and price.
 	 *
-	 * @param providerID The provider ID for the product.
-	 * @param quantity Total final quantity for this product (provider units).
+	 * @param supplierID The supplier ID for the product.
+	 * @param quantity Total final quantity for this product (supplier units).
 	 * @param price Total price in cents.
-	 * @see #addProduct(ProviderProduct)
+	 * @see #addProduct(SupplierProduct)
 	 */
-	public abstract void addProduct(Serializable providerID, double quantity, int price);
+	public abstract void addProduct(Serializable supplierID, double quantity, int price);
 
-	/** Add a product from a {@link ProviderProduct}.
+	/** Add a product from a {@link SupplierProduct}.
 	 *
-	 * @param product The combination of the provider ID, quantity and price
+	 * @param product The combination of the supplier ID, quantity and price
 	 *   of the product.
 	 * @see #addProduct(Serializable, double, int)
 	 */
-	public void addProduct(ProviderProduct product)
+	public void addProduct(SupplierProduct product)
 	{
-		this.addProduct(product.providerID, product.quantity, product.price);
+		this.addProduct(product.supplierID, product.quantity, product.price);
 	}
 }

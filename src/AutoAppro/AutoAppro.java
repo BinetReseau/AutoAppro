@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import providers.*;
+import suppliers.*;
 import loggers.*;
 import models.*;
 import util.*;
@@ -31,14 +31,14 @@ public class AutoAppro
 	private static final Point SPLASH_STATUS_POS = new Point(85, 300);
 	private static final Color SPLASH_STATUS_COLOR = Color.WHITE;
 	
-	/* List of all the available providers and loggers */
-	public static final Provider[] providers = {new Intermarche()};
+	/* List of all the available suppliers and loggers */
+	public static final Supplier[] suppliers = {new Intermarche()};
 	public static final Logger[] loggers = {new Bar2Manual(), new Bar2Auto()};
 
 	private static MySplash splash;
 
 	public static ResourceBundle messages;
-	public static Provider provider;
+	public static Supplier supplier;
 	public static Logger logger;
 	public static ImageIcon icon;
 	public static HashMap<Serializable, Product> products;
@@ -92,41 +92,41 @@ public class AutoAppro
 		/* Loading the icon for the application */
 		java.net.URL imgURL = AutoAppro.class.getResource("icon.png");
 		icon = new ImageIcon(imgURL);
-		/* Getting the provider */
-		splash.setStatus(messages.getString("load_provider"), 0.05);
-		provider = null;
+		/* Getting the supplier */
+		splash.setStatus(messages.getString("load_supplier"), 0.05);
+		supplier = null;
 		{
-			Serializable record = MyPreferences.get("provider");
+			Serializable record = MyPreferences.get("supplier");
 			if (record != null)
 			{
 				String savedName = (String) record;
-				for (Provider p : providers)
+				for (Supplier p : suppliers)
 				{
 					if (p.getName().equals(savedName))
 					{
-						provider = p;
+						supplier = p;
 						break;
 					}
 				}
 			}
 		}
-		if (provider == null)
+		if (supplier == null)
 		{
-			if (providers.length < 2)
+			if (suppliers.length < 2)
 			{
-				provider = providers[0];
+				supplier = suppliers[0];
 			} else {
-				Object chosen = JOptionPane.showInputDialog(null, messages.getString("provider_msg"),
-						messages.getString("provider_title"), JOptionPane.QUESTION_MESSAGE, icon,
-						providers, providers[0]);
+				Object chosen = JOptionPane.showInputDialog(null, messages.getString("supplier_msg"),
+						messages.getString("supplier_title"), JOptionPane.QUESTION_MESSAGE, icon,
+						suppliers, suppliers[0]);
 				if (chosen == null)
 				{
 					splash.dispose();
 					return;
 				}
-				provider = (Provider) chosen;
+				supplier = (Supplier) chosen;
 			}
-			MyPreferences.set("provider", provider.getName());
+			MyPreferences.set("supplier", supplier.getName());
 		}
 		/* Getting the logger */
 		splash.setStatus(messages.getString("load_logger"), 0.1);
@@ -191,13 +191,13 @@ public class AutoAppro
 			splash.setStatus(messages.getString("err_updates"), 0.15);
 			try { Thread.sleep(2000); } catch (InterruptedException e) { }
 		}
-		/* Initializing the provider */
-		splash.setStatus(messages.getString("load_init_provider"), 0.45);
-		provider.initialize();
+		/* Initializing the supplier */
+		splash.setStatus(messages.getString("load_init_supplier"), 0.45);
+		supplier.initialize();
 		/* Initializing the logger */
 		splash.setStatus(messages.getString("load_init_logger"), 0.70);
 		logger.initialize();
-		/* Getting the products associated with the current provider */
+		/* Getting the products associated with the current supplier */
 		splash.setStatus(messages.getString("load_products"), 0.95);
 		getProducts();
 		/* Creating the main window */
@@ -218,7 +218,7 @@ public class AutoAppro
 	@SuppressWarnings("unchecked")
 	private static void getProducts()
 	{
-		Object productsRecord = SerialFileHandler.readObject(provider.getName() + ".dat");
+		Object productsRecord = SerialFileHandler.readObject(supplier.getName() + ".dat");
 		if ((productsRecord != null) && (productsRecord.getClass() == HashMap.class))
 			products = (HashMap<Serializable, Product>) productsRecord;
 		else
@@ -230,7 +230,7 @@ public class AutoAppro
 	public static void saveProducts()
 	{
 		if (!productsModified) return;
-		SerialFileHandler.writeObject(products, provider.getName() + ".dat");
+		SerialFileHandler.writeObject(products, supplier.getName() + ".dat");
 		productsModified = false;
 	}
 

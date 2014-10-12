@@ -10,24 +10,24 @@ import models.*;
 @SuppressWarnings("serial")
 public class MyTableModel extends AbstractTableModel
 {
-	private final ProviderProduct[] data;
+	private final SupplierProduct[] data;
 	private final boolean[] dataSwitch;
 	private final String[] columnNames;
 
-	public MyTableModel(Collection<ProviderProduct> initialData)
+	public MyTableModel(Collection<SupplierProduct> initialData)
 	{
-		ArrayList<ProviderProduct> sortedData = new ArrayList<ProviderProduct>(initialData);
-		Collections.sort(sortedData, new Comparator<ProviderProduct>() {
+		ArrayList<SupplierProduct> sortedData = new ArrayList<SupplierProduct>(initialData);
+		Collections.sort(sortedData, new Comparator<SupplierProduct>() {
 			@Override
-			public int compare(ProviderProduct o1, ProviderProduct o2)
+			public int compare(SupplierProduct o1, SupplierProduct o2)
 			{
-				return o1.providerID.toString().compareTo(o2.providerID.toString());
+				return o1.supplierID.toString().compareTo(o2.supplierID.toString());
 			}
 		});
-		data = new ProviderProduct[sortedData.size()];
+		data = new SupplierProduct[sortedData.size()];
 		dataSwitch = new boolean[sortedData.size()];
 		int i = 0;
-		for (ProviderProduct p : sortedData)
+		for (SupplierProduct p : sortedData)
 		{
 			data[i] = p;
 			dataSwitch[i] = true;
@@ -64,7 +64,7 @@ public class MyTableModel extends AbstractTableModel
 		case 0:
 			return new Boolean(dataSwitch[row]);
 		case 1:
-			return data[row].providerID.toString();
+			return data[row].supplierID.toString();
 		case 2:
 			return new Double(data[row].quantity);
 		case 3:
@@ -136,7 +136,7 @@ public class MyTableModel extends AbstractTableModel
 			if (dataSwitch[i])
 			{
 				toAdd = new LogItem();
-				toAdd.barID = AutoAppro.products.get(data[i].providerID).barID;
+				toAdd.barID = AutoAppro.products.get(data[i].supplierID).barID;
 				toAdd.price = data[i].price;
 				toAdd.quantity = data[i].quantity;
 				toLog.add(toAdd);

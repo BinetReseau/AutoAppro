@@ -26,19 +26,19 @@ public class Product implements Serializable, Comparable<Product>
 	public double mult;
 	/** The ID for this product on the client end. */
 	public int barID;
-	/** The necessary information for the provider to identify this product. */
-	public Serializable providerID;
+	/** The necessary information for the supplier to identify this product. */
+	public Serializable supplierID;
 
 	@Override
 	public String toString()
 	{
-		return providerID.toString();
+		return supplierID.toString();
 	}
 
 	/* Use this comparison method only for display purposes. */
 	@Override
 	public int compareTo(Product other)
 	{
-		return providerID.toString().compareTo(other.providerID.toString());
+		return supplierID.toString().compareTo(other.supplierID.toString());
 	}
 }

@@ -28,4 +28,4 @@ bin/AutoAppro/AutoAppro.class: src/AutoAppro/AutoAppro.java
 	$(JAVAC) $(VERBOSE2) -sourcepath src -classpath bin src/AutoAppro/AutoAppro.java -d bin
 
 clean:
-	rm -r$(VERBOSE1)f AutoAppro.jar bin/AutoAppro/*.class bin/loggers/*.class bin/models bin/providers/*.class bin/util
+	rm -r$(VERBOSE1)f AutoAppro.jar bin/AutoAppro/*.class bin/loggers/*.class bin/models bin/suppliers/*.class bin/util

@@ -42,7 +42,7 @@ public class MainWindow
 	private static JList<Product> productList;
 	private static volatile String msgStr;
 	private static volatile Status status;
-	private static HashMap<Serializable, ProviderProduct> currentDelivery;
+	private static HashMap<Serializable, SupplierProduct> currentDelivery;
 	
 	private static final ReentrantLock productEditLock;
 	private static final Condition productEditCondition;
@@ -73,20 +73,20 @@ public class MainWindow
 			mainWindow.setJMenuBar(menuBar);
 			JMenu mnFile = new JMenu(lang("window_menu_file"));
 			menuBar.add(mnFile);
-			JMenuItem mntmChangeProvider = new JMenuItem(lang("window_menu_chg_provider"));
-			mntmChangeProvider.addActionListener(new ActionListener() {
+			JMenuItem mntmChangeSupplier = new JMenuItem(lang("window_menu_chg_supplier"));
+			mntmChangeSupplier.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent evt) {
-					if (AutoAppro.providers.length < 2)
+					if (AutoAppro.suppliers.length < 2)
 					{
-						JOptionPane.showMessageDialog(mainWindow, lang("provider_one"),
+						JOptionPane.showMessageDialog(mainWindow, lang("supplier_one"),
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 					} else {
-						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("provider_msg"),
-								lang("provider_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
-								AutoAppro.providers, AutoAppro.providers[0]);
+						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("supplier_msg"),
+								lang("supplier_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
+								AutoAppro.suppliers, AutoAppro.suppliers[0]);
 						if (chosen == null) return;
-						MyPreferences.set("provider", ((Provider) chosen).getName());
+						MyPreferences.set("supplier", ((Supplier) chosen).getName());
 						AutoAppro.saveProducts();
 						String filename = AutoAppro.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 						filename = (new File(filename)).getName();
@@ -101,7 +101,7 @@ public class MainWindow
 					}
 				}
 			});
-			mnFile.add(mntmChangeProvider);
+			mnFile.add(mntmChangeSupplier);
 			JMenuItem mntmChangeLogger = new JMenuItem(lang("window_menu_chg_logger"));
 			mntmChangeLogger.addActionListener(new ActionListener() {
 				@Override
@@ -112,9 +112,9 @@ public class MainWindow
 						JOptionPane.showMessageDialog(mainWindow, lang("logger_one"),
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 					} else {
-						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("provider_msg"),
-								lang("provider_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
-								AutoAppro.providers, AutoAppro.providers[0]);
+						Object chosen = JOptionPane.showInputDialog(mainWindow, lang("supplier_msg"),
+								lang("supplier_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
+								AutoAppro.suppliers, AutoAppro.suppliers[0]);
 						if (chosen == null) return;
 						MyPreferences.set("logger", ((Logger) chosen).getName());
 						AutoAppro.saveProducts();
@@ -155,15 +155,15 @@ public class MainWindow
 				}
 			});
 			mnOptions.add(mntmLogger);
-			JMenuItem mntmProvider = new JMenuItem(lang("window_menu_opt_provider"));
-			mntmProvider.addActionListener(new ActionListener() {
+			JMenuItem mntmSupplier = new JMenuItem(lang("window_menu_opt_supplier"));
+			mntmSupplier.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0)
 				{
-					AutoAppro.provider.askSettings(mainWindow);
+					AutoAppro.supplier.askSettings(mainWindow);
 				}
 			});
-			mnOptions.add(mntmProvider);
+			mnOptions.add(mntmSupplier);
 			JMenu mnHelp = new JMenu(lang("window_menu_hm"));
 			menuBar.add(mnHelp);
 			JMenuItem mntmHelp = new JMenuItem(lang("window_menu_help"));
@@ -336,7 +336,7 @@ public class MainWindow
 					}
 					synchronized (AutoAppro.products)
 					{
-						editProduct(myProduct.providerID, myProduct);
+						editProduct(myProduct.supplierID, myProduct);
 					}
 				}
 			});
@@ -353,7 +353,7 @@ public class MainWindow
 								lang("common_error"), JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					AutoAppro.products.remove(myProduct.providerID);
+					AutoAppro.products.remove(myProduct.supplierID);
 					AutoAppro.productsModified = true;
 					updateProducts();
 				}
@@ -471,11 +471,11 @@ public class MainWindow
 	private static Retriever retriever = new Retriever()
 	{
 		@Override
-		public void addProduct(Serializable providerID, double quantity, int price)
+		public void addProduct(Serializable supplierID, double quantity, int price)
 		{
-			Product currentProduct = getProduct(providerID);
+			Product currentProduct = getProduct(supplierID);
 			if (currentProduct == null) return;
-			ProviderProduct result = new ProviderProduct(), currentRecord;
+			SupplierProduct result = new SupplierProduct(), currentRecord;
 			switch (currentProduct.type)
 			{
 			case OPEN:
@@ -488,7 +488,7 @@ public class MainWindow
 				break;
 			case ASK_QTT:
 				do {
-					msgStr = providerID.toString();
+					msgStr = supplierID.toString();
 					try {
 						SwingUtilities.invokeAndWait(askQuantity);
 					} catch (Exception e) {}
@@ -507,14 +507,14 @@ public class MainWindow
 			result.price = price;
 			synchronized (currentDelivery)
 			{
-				currentRecord = currentDelivery.get(providerID);
+				currentRecord = currentDelivery.get(supplierID);
 				if (currentRecord != null)
 				{
 					currentRecord.quantity += result.quantity;
 					currentRecord.price += result.price;
 				} else {
-					result.providerID = providerID;
-					currentDelivery.put(providerID, result);
+					result.supplierID = supplierID;
+					currentDelivery.put(supplierID, result);
 				}
 			}
 		}
@@ -536,7 +536,7 @@ public class MainWindow
 		}
 	};
 
-	/* Get the product from the providerID, or create a new one if necessary (non-GUI thread). */
+	/* Get the product from the supplierID, or create a new one if necessary (non-GUI thread). */
 	private static Product getProduct(Serializable productID)
 	{
 		final Serializable productIDCopy = productID;
@@ -561,7 +561,7 @@ public class MainWindow
 						if (msgStr != null)
 						{
 							Product newProduct = new Product();
-							newProduct.providerID = productID;
+							newProduct.supplierID = productID;
 							newProduct.type = p.type;
 							newProduct.barID = p.barID;
 							newProduct.mult = p.mult;
@@ -738,7 +738,7 @@ public class MainWindow
 				if (isNewProduct)
 				{
 					Product toAdd = new Product();
-					toAdd.providerID = myProductID;
+					toAdd.supplierID = myProductID;
 					toAdd.type = (ProductType) productType.getSelectedItem();
 					toAdd.mult = multValue;
 					toAdd.barID = id;
@@ -768,9 +768,9 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			currentDelivery = new HashMap<Serializable, ProviderProduct>();
+			currentDelivery = new HashMap<Serializable, SupplierProduct>();
 			msgStr = null;
-			if (AutoAppro.provider.tryAutomaticRetrieve())
+			if (AutoAppro.supplier.tryAutomaticRetrieve())
 				status = Status.WAITING_APPROVAL;
 			else
 				status = Status.WAITING_CONTENT;
@@ -819,13 +819,13 @@ public class MainWindow
 		@Override
 		public void run() {
 			try {
-				AutoAppro.provider.retrieveFromString(msgStr);
+				AutoAppro.supplier.retrieveFromString(msgStr);
 			} catch (IllegalArgumentException e) {
 				msgStr = e.getMessage();
 				SwingUtilities.invokeLater(updateGUI);
 				return;
 			}
-			if (AutoAppro.provider.useMissingList())
+			if (AutoAppro.supplier.useMissingList())
 				status = Status.WAITING_MISSING;
 			else
 				status = Status.WAITING_APPROVAL;
@@ -840,7 +840,7 @@ public class MainWindow
 		@Override
 		public void run() {
 			try {
-				AutoAppro.provider.retrieveMissing(msgStr);
+				AutoAppro.supplier.retrieveMissing(msgStr);
 			} catch (IllegalArgumentException e) {
 				msgStr = e.getMessage();
 				SwingUtilities.invokeLater(updateGUI);
@@ -857,7 +857,7 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			AutoAppro.provider.getItems(retriever);
+			AutoAppro.supplier.getItems(retriever);
 			SwingUtilities.invokeLater(deliveryUpdated);
 		}
 	};
@@ -891,7 +891,7 @@ public class MainWindow
 		return AutoAppro.messages.getString(keyword);
 	}
 
-	/** Update the list of products for the current provider. */
+	/** Update the list of products for the current supplier. */
 	public static void updateProducts()
 	{
 		Vector<Product> data = new Vector<Product>(AutoAppro.products.values());

@@ -42,7 +42,7 @@ public abstract class Logger
 	/** Get the logger panel.
 	 * <p>
 	 * This function is used when a new product is found on the
-	 * provider side, to let the user choose (or not) the
+	 * supplier side, to let the user choose (or not) the
 	 * correct corresponding bar item.
 	 * <p>
 	 * Note that this function is to be called from the GUI thread.
@@ -50,10 +50,10 @@ public abstract class Logger
 	 * @param isNew Check whether this is a new product.
 	 * @param defaultID The default ID (the old one if the product is not new,
 	 *   The last free one after an existing ID else).
-	 * @param providerName The name of the product as the provider sees it.
+	 * @param supplierName The name of the product as the supplier sees it.
 	 * @return A new {@link LoggerPanel} object.
 	 */
-	public LoggerPanel getLoggerPanel(int defaultID, String providerName)
+	public LoggerPanel getLoggerPanel(int defaultID, String supplierName)
 	{
 		final JSpinner productBarID = new JSpinner(new SpinnerNumberModel(defaultID, 1, 999999, 1));
 		@SuppressWarnings("serial")

@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 import AutoAppro.AutoAppro;
 
-/** The abstract class every provider must implement.
+/** The abstract class every supplier must implement.
  * <p>
  * The main principle is the following :
  * <ol>
@@ -26,13 +26,13 @@ import AutoAppro.AutoAppro;
  * and {@link Object#equals(Object)} (even though the hash code may be always the same,
  * which is not recommended for performance reasons).
  */
-public abstract class Provider
+public abstract class Supplier
 {
 	/** Try to automatically retrieve the information related to the last delivery.
 	 * <p>
 	 * More precisely, this delivery should be the last delivery that has
 	 * not been retrieved yet, not necessarily the very last one.
-	 * If this operation is not possible for a given provider,
+	 * If this operation is not possible for a given supplier,
 	 * this function must then only return <code>false</code>.
 	 *
 	 * @return <code>true</code> in case the information has been
@@ -78,17 +78,17 @@ public abstract class Provider
 	 */
 	public abstract void getItems(Retriever retriever);
 
-	/** Get the name of the provider.
+	/** Get the name of the supplier.
 	 *
-	 * @return The name of the provider.
+	 * @return The name of the supplier.
 	 */
 	public abstract String getName();
 
-	/** Initialize the provider.
+	/** Initialize the supplier.
 	 * <p>
 	 * Actually, some initializing part might be in the constructor,
-	 * but the constructor may be called even if this provider is not used.
-	 * Therefore, this function is called once the provider chosen,
+	 * but the constructor may be called even if this supplier is not used.
+	 * Therefore, this function is called once the supplier chosen,
 	 * and only for this one.
 	 */
 	public void initialize()
@@ -101,10 +101,10 @@ public abstract class Provider
 		return this.getName();
 	}
 
-	/** Ask the user for any specific settings for this provider (GUI thread). */
+	/** Ask the user for any specific settings for this supplier (GUI thread). */
 	public void askSettings(JFrame parent)
 	{
-		JOptionPane.showMessageDialog(parent, AutoAppro.messages.getString("provider_no_opt"),
+		JOptionPane.showMessageDialog(parent, AutoAppro.messages.getString("supplier_no_opt"),
 				AutoAppro.messages.getString("common_info"), JOptionPane.INFORMATION_MESSAGE);
 	}
 }

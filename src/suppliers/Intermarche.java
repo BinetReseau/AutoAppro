@@ -1,4 +1,4 @@
-package providers;
+package suppliers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.regex.*;
 import util.SimilarityChecker;
 import models.*;
 
-public class Intermarche extends Provider
+public class Intermarche extends Supplier
 {
 	private static final int INITIAL_HASHMAP_SIZE = 4096;
 	private static final int SIMILARITY_ERR_ACCEPT = 3;
@@ -20,11 +20,11 @@ public class Intermarche extends Provider
 		qttPattern = Pattern.compile("(\\d+(?:[,.]\\d+)?)(?:\\s*k?g)?");
 	}
 
-	private HashMap<String, LinkedList<ProviderProduct>> products;
+	private HashMap<String, LinkedList<SupplierProduct>> products;
 
 	public Intermarche()
 	{
-		products = new HashMap<String, LinkedList<ProviderProduct>>(INITIAL_HASHMAP_SIZE);
+		products = new HashMap<String, LinkedList<SupplierProduct>>(INITIAL_HASHMAP_SIZE);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class Intermarche extends Provider
 					throw new IllegalArgumentException("Wrong line (need 4 elements) : " + line);
 				}
 				/* Retrieve the information for the current product */
-				ProviderProduct current = new ProviderProduct();
+				SupplierProduct current = new SupplierProduct();
 				Matcher matcher;
 				matcher = pricePattern.matcher(elements[3].trim());
 				if (!matcher.matches())
@@ -73,12 +73,12 @@ public class Intermarche extends Provider
 				if (elements[2].contains("kg"))
 					current.quantity *= 1000;
 				elements[0] = elements[0].trim();
-				current.providerID = elements[0];
+				current.supplierID = elements[0];
 				/* Append the result to the list in the hash map */
-				LinkedList<ProviderProduct> list = products.get(elements[0]);
+				LinkedList<SupplierProduct> list = products.get(elements[0]);
 				if (list == null)
 				{
-					list = new LinkedList<ProviderProduct>();
+					list = new LinkedList<SupplierProduct>();
 					products.put(elements[0], list);
 				}
 				list.add(current);
@@ -130,8 +130,8 @@ public class Intermarche extends Provider
 					endQtt *= 1000;
 				/* We try to find the same product */
 				String simKey = elements[1].toUpperCase() + " - " + elements[2];
-				LinkedList<ProviderProduct> list = null;
-				for (Map.Entry<String, LinkedList<ProviderProduct>> entry : products.entrySet())
+				LinkedList<SupplierProduct> list = null;
+				for (Map.Entry<String, LinkedList<SupplierProduct>> entry : products.entrySet())
 				{
 					if (isSimilar(entry.getKey(), simKey))
 					{
@@ -141,7 +141,7 @@ public class Intermarche extends Provider
 				}
 				if (list == null)
 				{
-					for (Map.Entry<String, LinkedList<ProviderProduct>> entry : products.entrySet())
+					for (Map.Entry<String, LinkedList<SupplierProduct>> entry : products.entrySet())
 					{
 						if (SimilarityChecker.isSimilar(entry.getKey(), simKey, SIMILARITY_ERR_ACCEPT))
 						{
@@ -153,8 +153,8 @@ public class Intermarche extends Provider
 				if (list == null)
 					throw new IllegalArgumentException("Unknown product : " + simKey);
 				/* First, we also try to find the same quantity, else we take the first element */
-				ProviderProduct myItem = list.getFirst();
-				for (ProviderProduct item : list)
+				SupplierProduct myItem = list.getFirst();
+				for (SupplierProduct item : list)
 				{
 					if (item.quantity == startQtt)
 					{
@@ -186,9 +186,9 @@ public class Intermarche extends Provider
 	@Override
 	public void getItems(Retriever retriever)
 	{
-		for (LinkedList<ProviderProduct> list : products.values())
+		for (LinkedList<SupplierProduct> list : products.values())
 		{
-			for (ProviderProduct p : list)
+			for (SupplierProduct p : list)
 				retriever.addProduct(p);
 		}
 		products.clear();

@@ -294,7 +294,7 @@ public class Bar2Auto extends Logger
 	}
 
 	@Override
-	public LoggerPanel getLoggerPanel(int defaultID, String providerName)
+	public LoggerPanel getLoggerPanel(int defaultID, String supplierName)
 	{
 		final Vector<ChoiceItem> data = new Vector<ChoiceItem>(items.size());
 		for (Entry<Integer, BarItem> item : items.entrySet())
@@ -302,7 +302,7 @@ public class Bar2Auto extends Logger
 			ChoiceItem toAdd = new ChoiceItem();
 			toAdd.id = item.getKey();
 			toAdd.item = item.getValue();
-			toAdd.cmpValue = item.getValue().checker.count(providerName);
+			toAdd.cmpValue = item.getValue().checker.count(supplierName);
 			data.add(toAdd);
 		}
 		Collections.sort(data);

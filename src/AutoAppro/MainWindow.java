@@ -525,9 +525,9 @@ public class MainWindow
 	{
 		@Override
 		public void run() {
-			msgStr = JOptionPane.showInputDialog(mainWindow, lang("ask_qtt_title"),
+			msgStr = JOptionPane.showInputDialog(mainWindow,
 					lang("ask_qtt_content") + " " + msgStr + "\n" + lang("ask_qtt_content2"),
-					JOptionPane.QUESTION_MESSAGE);
+					lang("ask_qtt_title"), JOptionPane.QUESTION_MESSAGE);
 			if ((msgStr != null) && (!quantityPattern.matcher(msgStr).matches()))
 			{
 				JOptionPane.showMessageDialog(mainWindow, lang("error_number_format"),

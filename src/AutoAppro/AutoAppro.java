@@ -22,7 +22,7 @@ import util.*;
 public class AutoAppro
 {
 	public static final String VERSION = "1.1";
-	private static final String UPDATE_URL = "http://bar.eleves.polytechnique.fr/AutoAppro/";
+	public static final String UPDATE_URL = "http://bar.eleves.polytechnique.fr/AutoAppro/";
 	private static final int HTTP_UPDATE_TIMEOUT = 2000;
 	private static final String USAGE = "Usage: java -jar AutoAppro.jar [-locale lang country] [-help]";
 	/* Example values for the splash screen */
@@ -50,6 +50,8 @@ public class AutoAppro
 	 */
 	public static void main(String[] args)
 	{
+		/* Making sure the preference file gets the right version */
+		MyPreferences.set("version", VERSION);
 		/* Initializing the splash screen */
 		splash = new MySplash(SPLASH_PRGSS_AREA, SPLASH_PRGSS_COLOR,
 				SPLASH_STATUS_POS, SPLASH_STATUS_COLOR);

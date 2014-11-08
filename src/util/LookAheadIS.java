@@ -18,6 +18,8 @@ public class LookAheadIS extends InputStream
 	 */
 	public LookAheadIS(InputStream in, int size) throws IOException
 	{
+		if (size < 1)
+			throw new IllegalArgumentException();
 		this.in = in;
 		buffer = new byte[size];
 		for (bsize = 0; bsize < size; ++bsize)
@@ -33,13 +35,13 @@ public class LookAheadIS extends InputStream
 	@Override
 	public synchronized int read() throws IOException
 	{
-		if (bsize <= 0) return -1;
+		if (bsize == 0) return -1;
 		int returnValue = buffer[offset];
 		if (bsize == buffer.length)
 		{
 			int read = in.read();
 			if (read != -1)
-				buffer[bsize] = (byte) read;
+				buffer[offset] = (byte) read;
 			else --bsize;
 		} else {
 			--bsize;
@@ -66,7 +68,7 @@ public class LookAheadIS extends InputStream
 	 * 
 	 * @param seq The comparison sequence of bytes.
 	 * @return <code>true</code> if the next bytes to be read start with <code>seq</code>,
-	 *     <code>false</code> otherwise.
+	 *   <code>false</code> otherwise.
 	 */
 	public synchronized boolean startsWith(byte[] seq)
 	{
@@ -80,5 +82,28 @@ public class LookAheadIS extends InputStream
 				return false;
 		}
 		return true;
+	}
+	
+	/** Check whether or not we are at the end of the stream.
+	 * 
+	 * @return <code>true</code> if the end of the stream has been reached,
+	 *   <code>false</code> otherwise.
+	 */
+	public synchronized boolean atEnd()
+	{
+		return bsize == 0;
+	}
+	
+	@Override
+	public synchronized int available() throws IOException
+	{
+		return bsize + in.available();
+	}
+	
+	@Override
+	public synchronized void close() throws IOException
+	{
+		in.close();
+		bsize = 0;
 	}
 }

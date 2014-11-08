@@ -44,6 +44,8 @@ public class AutoAppro
 	public static HashMap<Serializable, Product> products;
 	public static boolean productsModified;
 
+	public static final Locale[] supportedLocales = {new Locale("en", "US"), new Locale("fr", "FR")};
+
 	/** The starting point of
 	 *
 	 * @param args The command-line arguments.

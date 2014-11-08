@@ -180,6 +180,22 @@ public class MainWindow
 				}
 			});
 			mnHelp.add(mntmHelp);
+			JMenuItem mntmLanguage = new JMenuItem(lang("window_menu_language"));
+			mntmLanguage.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent evt)
+				{
+					Object chosen = JOptionPane.showInputDialog(mainWindow, lang("lang_msg"),
+							lang("lang_title"), JOptionPane.QUESTION_MESSAGE, AutoAppro.icon,
+							AutoAppro.supportedLocales, AutoAppro.supportedLocales[0]);
+					if (chosen == null)
+						return;
+					MyPreferences.set("locale", (Locale) chosen);
+					JOptionPane.showMessageDialog(mainWindow, lang("lang_wait"),
+							lang("lang_title"), JOptionPane.INFORMATION_MESSAGE);
+				}
+			});
+			mnHelp.add(mntmLanguage);
 			JSeparator separator_1 = new JSeparator();
 			mnHelp.add(separator_1);
 			JMenuItem mntmAbout = new JMenuItem(lang("window_menu_about"));
